@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>🐞 Editor de recorrido — Bluedebug</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #080808;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      gap: 28px;
+      padding: 28px;
+      min-height: 100vh;
+    }
+
+    /* ── Left: site preview + canvas ── */
+    .preview-wrap {
+      position: relative;
+      width: 420px;
+      height: 900px;          /* se actualiza con JS tras cargar el iframe */
+      flex-shrink: 0;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.1);
+    }
+
+    /* Scaled-down iframe of the real site */
+    #siteFrame {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1440px;
+      height: 900px;          /* viewport normal — se amplía tras cargar */
+      transform: scale(0.2917);
+      transform-origin: 0 0;
+      pointer-events: none;
+      border: none;
+    }
+
+    /* Very light veil — just enough contrast for the path */
+    .veil {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.15);
+      pointer-events: none;
+    }
+
+    /* Transparent canvas on top — captures all clicks */
+    #cvs {
+      position: absolute;
+      top: 0; left: 0;
+      cursor: crosshair;
+      background: transparent;
+      display: block;
+    }
+
+    /* Loading spinner */
+    #loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: #0f0f0f;
+      font-size: 13px;
+      color: rgba(255,255,255,.4);
+      border-radius: 14px;
+      transition: opacity .4s;
+    }
+    #loading.hidden { opacity: 0; pointer-events: none; }
+    .spinner {
+      width: 28px; height: 28px;
+      border: 3px solid rgba(8,146,208,.2);
+      border-top-color: #0892D0;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Scroll indicator on right edge of preview */
+    .scroll-indicator {
+      position: absolute;
+      top: 0; right: 0;
+      width: 24px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 6px 4px;
+      pointer-events: none;
+    }
+    .scroll-label {
+      font-size: 8px;
+      color: rgba(255,255,255,.3);
+      writing-mode: vertical-rl;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar { flex: 1; max-width: 340px; display: flex; flex-direction: column; gap: 16px; }
+
+    h1 { font-size: 20px; font-weight: 900; letter-spacing: -.02em; }
+    .sub { font-size: 13px; color: rgba(255,255,255,.4); margin-top: 3px; }
+
+    .tip {
+      background: rgba(8,146,208,.08);
+      border: 1px solid rgba(8,146,208,.2);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: rgba(255,255,255,.55);
+      line-height: 1.7;
+    }
+    .tip b { color: rgba(255,255,255,.9); }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .btn {
+      padding: 7px 13px;
+      border-radius: 8px;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .btn-blue  { background: #0892D0; color: #fff; }
+    .btn-blue:hover { background: #0780bc; }
+    .btn-ghost { background: rgba(255,255,255,.07); color: rgba(255,255,255,.65); border: 1px solid rgba(255,255,255,.1); }
+    .btn-ghost:hover { background: rgba(255,255,255,.12); }
+    .btn-red   { background: rgba(239,68,68,.12); color: #f87171; border: 1px solid rgba(239,68,68,.2); }
+    .btn-red:hover { background: rgba(239,68,68,.2); }
+
+    .section-label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: rgba(255,255,255,.28);
+      margin-bottom: 6px;
+    }
+
+    .points-scroll { max-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; }
+    .pt-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(255,255,255,.04);
+      border-radius: 6px; padding: 5px 10px; font-size: 11px;
+    }
+    .pt-num { color: #0892D0; font-weight: 700; margin-right: 6px; }
+
+    .code-box {
+      background: #0d0d0d;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 10px;
+      padding: 14px;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 11px;
+      color: #5ec8f0;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.75;
+      flex: 1;
+    }
+
+    .copy-row { display: flex; align-items: center; gap: 10px; }
+    .copied { font-size: 12px; color: #22c55e; opacity: 0; transition: opacity .2s; }
+    .copied.show { opacity: 1; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(8,146,208,.3); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- ── Left: site preview ── -->
+<div class="preview-wrap">
+  <!-- Loading state -->
+  <div id="loading">
+    <div class="spinner"></div>
+    Cargando la web...
+  </div>
+
+  <!-- Scaled-down live site -->
+  <iframe id="siteFrame" src="/" scrolling="no" onload="onFrameLoad()"></iframe>
+
+  <!-- Dark veil -->
+  <div class="veil"></div>
+
+  <!-- Canvas overlay -->
+  <canvas id="cvs" width="420" height="820"></canvas>
+
+  <!-- Section depth indicators -->
+  <div class="scroll-indicator">
+    <span class="scroll-label">Inicio</span>
+    <span class="scroll-label">Final</span>
+  </div>
+</div>
+
+<!-- ── Sidebar ── -->
+<div class="sidebar">
+  <div>
+    <h1>🐞 Editor de recorrido</h1>
+    <p class="sub">El fondo es tu web real</p>
+  </div>
+
+  <div class="tip">
+    <b>Clic</b> en la previsualización para añadir puntos<br>
+    <b>Arrastra</b> cualquier punto para moverlo<br>
+    <b>Clic derecho</b> sobre un punto para eliminarlo<br>
+    Punto <span style="color:#22c55e">verde</span> = inicio ·
+    Punto <span style="color:#ef4444">rojo</span> = final
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="loadDefault()">↺ Ejemplo</button>
+    <button class="btn btn-ghost" onclick="undo()">↩ Deshacer</button>
+    <button class="btn btn-red" onclick="clearAll()">🗑 Limpiar</button>
+  </div>
+
+  <div>
+    <div class="section-label">Puntos colocados (<span id="cnt">0</span>)</div>
+    <div class="points-scroll" id="ptList"></div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-height:0">
+    <div class="copy-row">
+      <div class="section-label" style="margin:0">Código → pega en ScrollBug.tsx</div>
+      <button class="btn btn-blue" style="padding:5px 10px;font-size:11px" onclick="doCopy()">Copiar</button>
+      <span class="copied" id="copied">¡Copiado!</span>
+    </div>
+    <div class="code-box" id="codeBox">Añade puntos para generar el código...</div>
+  </div>
+</div>
+
+<script>
+  const cvs = document.getElementById('cvs');
+  const ctx = cvs.getContext('2d');
+  // W and H are always read live from the canvas element so they stay correct after resize
+  const W = () => cvs.width;
+  const H = () => cvs.height;
+
+  let pts   = [];    // [{x:0..1, y:0..1}]
+  let drag  = null;
+  let dragOff = {x:0, y:0};
+
+  const SCALE = 0.2917;
+  const frame = document.getElementById('siteFrame');
+  const wrap  = document.querySelector('.preview-wrap');
+
+  function onFrameLoad() {
+    try {
+      const doc = frame.contentDocument;
+
+      // 1. Forzar min-h-screen a un valor fijo para que el Hero no se expanda
+      const style = doc.createElement('style');
+      style.textContent = `
+        .min-h-screen { min-height: 780px !important; }
+        html, body { height: auto !important; overflow: visible !important; }
+        /* ocultar la mariquita decorativa dentro del iframe */
+        [aria-hidden="true"] { display: none !important; }
+      `;
+      doc.head.appendChild(style);
+
+      // 2. Dos frames para que el CSS inyectado relayoute y podamos medir bien
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        const fullH = Math.max(
+          doc.body.scrollHeight,
+          doc.documentElement.scrollHeight,
+          3000   // mínimo razonable si scrollHeight aún no está listo
+        );
+
+        // 3. Ampliar el iframe a la altura real de la página
+        frame.style.height = fullH + 'px';
+
+        // 4. Ajustar canvas y contenedor
+        const canvasH = Math.round(fullH * SCALE);
+        cvs.width  = 420;
+        cvs.height = canvasH;
+        wrap.style.height = canvasH + 'px';
+
+        render();
+        updateSidebar();
+        document.getElementById('loading').classList.add('hidden');
+      }));
+    } catch (e) {
+      console.warn('iframe access error:', e);
+      document.getElementById('loading').classList.add('hidden');
+    }
+  }
+
+  /* ── coord helpers ── */
+  const toCvs   = p => ({ x: p.x * W(), y: p.y * H() });
+  const fromCvs = (x, y) => ({ x: Math.max(0,Math.min(1,x/W())), y: Math.max(0,Math.min(1,y/H())) });
+  const clientToCvs = e => {
+    const r = cvs.getBoundingClientRect();
+    return { x: (e.clientX-r.left)*(W()/r.width), y: (e.clientY-r.top)*(H()/r.height) };
+  };
+
+  function hitTest(cx, cy) {
+    for (let i = pts.length-1; i >= 0; i--) {
+      const c = toCvs(pts[i]);
+      if (Math.hypot(cx-c.x, cy-c.y) < 14) return i;
+    }
+    return -1;
+  }
+
+  /* ── render ── */
+  function render() {
+    const cw = W(), ch = H();
+    ctx.clearRect(0, 0, cw, ch);
+
+    // Subtle horizontal rules at 25%, 50%, 75% (rough section separators)
+    [0.25, 0.50, 0.75].forEach(t => {
+      ctx.setLineDash([3, 6]);
+      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, t*ch); ctx.lineTo(cw, t*ch); ctx.stroke();
+      ctx.setLineDash([]);
+    });
+
+    if (pts.length === 0) {
+      ctx.fillStyle = 'rgba(255,255,255,0.2)';
+      ctx.font = '13px -apple-system,sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Haz clic para colocar puntos', cw/2, ch/2);
+      return;
+    }
+
+    if (pts.length >= 2) {
+      const cs = pts.map(toCvs);
+
+      // Ghost (dashed)
+      ctx.setLineDash([4, 7]);
+      ctx.strokeStyle = 'rgba(8,146,208,0.22)';
+      ctx.lineWidth = 1.5;
+      drawPath(cs);
+
+      // Vivid — bright so it stands out on the dark site
+      ctx.setLineDash([]);
+      ctx.strokeStyle = '#5ec8f0';
+      ctx.lineWidth = 3;
+      ctx.shadowColor = '#0892D0';
+      ctx.shadowBlur = 12;
+      drawPath(cs);
+      ctx.shadowBlur = 0;
+    }
+
+    // Points
+    pts.forEach((p, i) => {
+      const c = toCvs(p);
+      // Glow halo
+      const g = ctx.createRadialGradient(c.x,c.y,0,c.x,c.y,20);
+      g.addColorStop(0, 'rgba(8,146,208,0.45)');
+      g.addColorStop(1, 'rgba(8,146,208,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(c.x,c.y,20,0,Math.PI*2); ctx.fill();
+
+      // Dot colour
+      const col = i===0 ? '#22c55e' : i===pts.length-1 ? '#ef4444' : '#0892D0';
+      ctx.fillStyle = col;
+      ctx.shadowColor = col;
+      ctx.shadowBlur = 10;
+      ctx.beginPath(); ctx.arc(c.x,c.y,8,0,Math.PI*2); ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // White border
+      ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Number label
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 8px -apple-system,sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(i+1, c.x, c.y);
+    });
+  }
+
+  function drawPath(cs) {
+    ctx.beginPath();
+    ctx.moveTo(cs[0].x, cs[0].y);
+    for (let i = 1; i < cs.length; i++) {
+      const a = cs[i-1], b = cs[i];
+      const mx = (a.x + b.x) / 2;
+      ctx.bezierCurveTo(mx, a.y, mx, b.y, b.x, b.y);
+    }
+    ctx.stroke();
+  }
+
+  /* ── sidebar ── */
+  function updateSidebar() {
+    document.getElementById('cnt').textContent = pts.length;
+    document.getElementById('ptList').innerHTML = pts.map((p,i) => `
+      <div class="pt-row">
+        <span><span class="pt-num">${i+1}</span>x:${Math.round(p.x*100)}%&nbsp; y:${Math.round(p.y*100)}%</span>
+        <span style="color:rgba(255,255,255,.18);font-size:9px">clic dcho → borrar</span>
+      </div>`).join('');
+
+    if (pts.length < 2) {
+      document.getElementById('codeBox').textContent = 'Añade al menos 2 puntos...';
+      return;
+    }
+
+    const n = pts.length;
+    const KEYS = pts.map((_,i) => parseFloat((i/(n-1)).toFixed(3)));
+    const XS   = pts.map(p => Math.round(p.x * 100));
+    const YS   = pts.map(p => Math.round(p.y * 100));
+
+    // Build SVG PATH
+    const sp = pts.map(p => ({ x: p.x*100, y: p.y*100 }));
+    let d = `M ${rnd(sp[0].x)} ${rnd(sp[0].y)}`;
+    for (let i = 1; i < sp.length; i++) {
+      const a = sp[i-1], b = sp[i];
+      const mx = (a.x+b.x)/2;
+      d += ` C ${rnd(mx)} ${rnd(a.y)} ${rnd(mx)} ${rnd(b.y)} ${rnd(b.x)} ${rnd(b.y)}`;
+    }
+
+    document.getElementById('codeBox').textContent =
+`const KEYS = [${KEYS.join(', ')}];
+const XS   = [${XS.join(', ')}];
+const YS   = [${YS.join(', ')}];
+
+const PATH =
+  "${d}";`;
+  }
+
+  const rnd = n => Math.round(n * 10) / 10;
+
+  function doCopy() {
+    const t = document.getElementById('codeBox').textContent;
+    if (!t.startsWith('const')) return;
+    navigator.clipboard.writeText(t).then(() => {
+      const el = document.getElementById('copied');
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2000);
+    });
+  }
+
+  /* ── actions ── */
+  function clearAll() { pts = []; render(); updateSidebar(); }
+  function undo()     { pts.pop(); render(); updateSidebar(); }
+
+  function loadDefault() {
+    pts = [
+      {x:.88,y:.04},{x:.70,y:.13},{x:.10,y:.08},{x:.06,y:.22},
+      {x:.42,y:.30},{x:.07,y:.38},{x:.87,y:.32},{x:.92,y:.50},
+      {x:.44,y:.60},{x:.07,y:.70},{x:.78,y:.67},{x:.12,y:.82},
+      {x:.72,y:.91},{x:.50,y:.97},
+    ];
+    render(); updateSidebar();
+  }
+
+  /* ── events ── */
+  cvs.addEventListener('mousedown', e => {
+    if (e.button === 2) return;
+    const {x, y} = clientToCvs(e);
+    const h = hitTest(x, y);
+    if (h >= 0) {
+      drag = h;
+      const c = toCvs(pts[h]);
+      dragOff = { x: x-c.x, y: y-c.y };
+    } else {
+      pts.push(fromCvs(x, y));
+      render(); updateSidebar();
+    }
+  });
+
+  cvs.addEventListener('mousemove', e => {
+    if (drag === null) return;
+    const {x, y} = clientToCvs(e);
+    pts[drag] = fromCvs(x - dragOff.x, y - dragOff.y);
+    render(); updateSidebar();
+  });
+
+  cvs.addEventListener('mouseup',    () => { drag = null; });
+  cvs.addEventListener('mouseleave', () => { drag = null; });
+
+  cvs.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    const {x, y} = clientToCvs(e);
+    const h = hitTest(x, y);
+    if (h >= 0) { pts.splice(h, 1); render(); updateSidebar(); }
+  });
+
+  loadDefault();
+</script>
+</body>
+</html>
