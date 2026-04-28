@@ -44,18 +44,17 @@ export default function TrustBar() {
             className="flex flex-col items-center gap-3"
           >
             <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center p-1.5"
+              className="w-16 h-16 rounded-2xl overflow-hidden"
               style={{
-                background: "var(--bd-card)",
                 border: "1px solid var(--bd-border-strong)",
               }}
             >
               <Image
                 src="/fvpa.png"
                 alt="Federación de Voleibol del Principado de Asturias"
-                width={52}
-                height={52}
-                className="object-contain w-full h-full"
+                width={64}
+                height={64}
+                className="object-cover w-full h-full"
               />
             </div>
             <div className="text-center">
@@ -83,18 +82,17 @@ export default function TrustBar() {
             className="flex flex-col items-center gap-3"
           >
             <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center p-1.5"
+              className="w-16 h-16 rounded-2xl overflow-hidden"
               style={{
-                background: "var(--bd-card)",
                 border: "1px solid var(--bd-border-strong)",
               }}
             >
               <Image
                 src="/fvbib.png"
                 alt="Federació de Voleibol de les Illes Balears"
-                width={52}
-                height={52}
-                className="object-contain w-full h-full"
+                width={64}
+                height={64}
+                className="object-cover w-full h-full"
               />
             </div>
             <div className="text-center">
