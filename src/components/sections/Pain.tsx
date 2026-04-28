@@ -32,14 +32,14 @@ const pains = [
 
 export default function Pain() {
   return (
-    <section className="py-28 relative" id="pain">
+    <section className="py-16 lg:py-28 relative" id="pain">
       <div className="max-w-[1200px] mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 52 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.6 }}
-          className="max-w-[560px] mb-16"
+          className="max-w-[560px] mb-10 lg:mb-16"
         >
           <div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-widest uppercase mb-5"

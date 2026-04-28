@@ -49,7 +49,7 @@ export default function Contact() {
 
   if (formState === "success") {
     return (
-      <section className="py-28" id="contact" style={{ borderTop: "1px solid var(--bd-border)" }}>
+      <section className="py-16 lg:py-28" id="contact" style={{ borderTop: "1px solid var(--bd-border)" }}>
         <div className="max-w-[600px] mx-auto px-6 text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -72,7 +72,7 @@ export default function Contact() {
 
   return (
     <section
-      className="py-28 relative overflow-hidden"
+      className="py-16 lg:py-28 relative overflow-hidden"
       id="contact"
       style={{ borderTop: "1px solid var(--bd-border)" }}
     >
@@ -85,7 +85,7 @@ export default function Contact() {
       />
 
       <div className="max-w-[1200px] mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
           {/* Left: copy */}
           <motion.div
             initial={{ opacity: 0, y: 52 }}
@@ -156,7 +156,7 @@ export default function Contact() {
                 border: "1px solid var(--bd-border-strong)",
               }}
             >
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Field
                   label="Nombre *"
                   value={form.name}

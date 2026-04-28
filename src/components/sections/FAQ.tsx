@@ -36,12 +36,12 @@ export default function FAQ() {
 
   return (
     <section
-      className="py-28 relative"
+      className="py-16 lg:py-28 relative"
       id="faq"
       style={{ borderTop: "1px solid var(--bd-border)" }}
     >
       <div className="max-w-[1200px] mx-auto px-6">
-        <div className="grid lg:grid-cols-[1fr_2fr] gap-16">
+        <div className="grid lg:grid-cols-[1fr_2fr] gap-8 lg:gap-16">
           <motion.div
             initial={{ opacity: 0, y: 52 }}
             whileInView={{ opacity: 1, y: 0 }}

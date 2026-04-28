@@ -27,7 +27,7 @@ const pillars = [
 export default function Solution() {
   return (
     <section
-      className="py-28 relative overflow-hidden"
+      className="py-16 lg:py-28 relative overflow-hidden"
       id="solution"
       style={{ borderTop: "1px solid var(--bd-border)" }}
     >
@@ -41,7 +41,7 @@ export default function Solution() {
       />
 
       <div className="max-w-[1200px] mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left: flow visual */}
           <motion.div
             initial={{ opacity: 0, x: -60 }}

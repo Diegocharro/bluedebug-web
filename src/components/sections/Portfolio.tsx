@@ -20,7 +20,7 @@ const apps = appsData.map((a) => ({
 export default function Portfolio() {
   return (
     <section
-      className="py-28 relative"
+      className="py-16 lg:py-28 relative"
       id="portfolio"
       style={{ borderTop: "1px solid var(--bd-border)" }}
     >
@@ -30,7 +30,7 @@ export default function Portfolio() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.6 }}
-          className="max-w-[560px] mb-16"
+          className="max-w-[560px] mb-10 lg:mb-16"
         >
           <div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-widest uppercase mb-5"

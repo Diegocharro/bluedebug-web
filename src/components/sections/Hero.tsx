@@ -16,7 +16,7 @@ export default function Hero() {
   return (
     <section
       className="relative min-h-screen flex items-center grid-bg overflow-hidden"
-      style={{ paddingTop: "80px" }}
+      style={{ paddingTop: "72px" }}
     >
       {/* Radial glow */}
       <div
@@ -28,7 +28,7 @@ export default function Hero() {
       />
 
       <div className="max-w-[1200px] mx-auto px-6 py-24 w-full">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left: copy */}
           <div>
             <motion.div
@@ -52,7 +52,7 @@ export default function Hero() {
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              className="text-5xl lg:text-6xl font-black tracking-[-0.03em] leading-[1.05] mb-6"
+              className="text-[2.5rem] sm:text-5xl lg:text-6xl font-black tracking-[-0.03em] leading-[1.05] mb-6"
             >
               Automatiza tu empresa{" "}
               <span className="text-gradient-blue">y ahorra tiempo</span>{" "}

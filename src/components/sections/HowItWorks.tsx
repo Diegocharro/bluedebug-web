@@ -33,7 +33,7 @@ const steps = [
 export default function HowItWorks() {
   return (
     <section
-      className="py-28 relative"
+      className="py-16 lg:py-28 relative"
       id="how-it-works"
       style={{ borderTop: "1px solid var(--bd-border)" }}
     >
@@ -43,7 +43,7 @@ export default function HowItWorks() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.6 }}
-          className="text-center max-w-[560px] mx-auto mb-20"
+          className="text-center max-w-[560px] mx-auto mb-12 lg:mb-20"
         >
           <div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-widest uppercase mb-5"

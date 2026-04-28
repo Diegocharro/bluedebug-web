@@ -17,7 +17,7 @@ export default function Calculator() {
 
   return (
     <section
-      className="py-28 relative overflow-hidden"
+      className="py-16 lg:py-28 relative overflow-hidden"
       id="calculator"
       style={{ borderTop: "1px solid var(--bd-border)" }}
     >
@@ -35,7 +35,7 @@ export default function Calculator() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.12 }}
           transition={{ duration: 0.6 }}
-          className="text-center max-w-[520px] mx-auto mb-16"
+          className="text-center max-w-[520px] mx-auto mb-10 lg:mb-16"
         >
           <div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-widest uppercase mb-5"
