@@ -24,7 +24,7 @@ export default function Hero() {
       <div className="mx-auto grid w-[min(1180px,92vw)] items-center gap-14 lg:grid-cols-[1.02fr_0.98fr] lg:gap-16">
         <div>
           <motion.div custom={0} variants={fade} initial="hidden" animate="show" className="mono" style={{ color: "var(--blue)" }}>
-            Bluedebug / ingeniería de procesos — desde 2023
+            Bluedebug / ingeniería de procesos — desde 2025
             <span className="blink">▮</span>
           </motion.div>
 

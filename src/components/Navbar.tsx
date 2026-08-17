@@ -38,7 +38,7 @@ export default function Navbar() {
             className="font-display text-[19px] font-extrabold tracking-[-0.04em]"
             style={{ color: "var(--ink)" }}
           >
-            Bluedebug
+            Blue<span style={{ color: "var(--blue)" }}>Debug</span>
           </span>
         </Link>
 
