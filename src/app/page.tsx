@@ -1,38 +1,31 @@
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import Hero from "@/components/sections/Hero";
-import TrustBar from "@/components/sections/TrustBar";
+import Trust from "@/components/sections/Trust";
 import Pain from "@/components/sections/Pain";
-import Solution from "@/components/sections/Solution";
-import HowItWorks from "@/components/sections/HowItWorks";
+import Services from "@/components/sections/Services";
+import Method from "@/components/sections/Method";
 import Calculator from "@/components/sections/Calculator";
-import Portfolio from "@/components/sections/Portfolio";
+import Work from "@/components/sections/Work";
 import FAQ from "@/components/sections/FAQ";
 import Contact from "@/components/sections/Contact";
-import Footer from "@/components/Footer";
-import ScrollBug from "@/components/ScrollBug";
-import BackgroundFX from "@/components/BackgroundFX";
 
 export default function Home() {
   return (
     <>
-      <BackgroundFX />
-      <ScrollBug />
       <Navbar />
-      {/* Wrapper con z-index > ladybug (z:2) para que el contenido tape a la mariquita */}
-      <div style={{ position: "relative", zIndex: 3 }}>
-        <main>
-          <Hero />
-          <TrustBar />
-          <Pain />
-          <Solution />
-          <HowItWorks />
-          <Calculator />
-          <Portfolio />
-          <FAQ />
-          <Contact />
-        </main>
-        <Footer />
-      </div>
+      <main>
+        <Hero />
+        <Trust />
+        <Pain />
+        <Services />
+        <Method />
+        <Calculator />
+        <Work />
+        <FAQ />
+        <Contact />
+      </main>
+      <Footer />
     </>
   );
 }

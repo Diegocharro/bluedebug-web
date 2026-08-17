@@ -1,117 +1,69 @@
-"use client";
+import Reveal from "@/components/Reveal";
 
-import { motion } from "framer-motion";
-import { Clock, FileX, RefreshCw, TrendingDown } from "lucide-react";
-
-const pains = [
+const COSTS = [
   {
-    icon: Clock,
-    title: "Horas perdidas en tareas repetitivas",
-    description:
-      "Tu equipo dedica horas cada semana a introducir datos, copiar información entre sistemas y hacer seguimientos manuales.",
+    figure: "1 de cada 5",
+    label: "horas de oficina",
+    text: "se van en copiar datos de un sitio a otro. No es una estimación de folleto: sale de cronometrar el proceso con el equipo delante.",
   },
   {
-    icon: FileX,
-    title: "Errores humanos costosos",
-    description:
-      "Los procesos manuales generan errores que cuestan tiempo, dinero y credibilidad frente a tus clientes.",
+    figure: "3 semanas",
+    label: "de retraso medio",
+    text: "entre que un dato entra y alguien lo ve en un informe. Para entonces la decisión ya se tomó a ciegas.",
   },
   {
-    icon: RefreshCw,
-    title: "Procesos imposibles de escalar",
-    description:
-      "Cada vez que crece el volumen de trabajo, tienes que contratar más personas en lugar de optimizar lo que ya tienes.",
+    figure: "El 90%",
+    label: "de los errores",
+    text: "no son de criterio: son de transcripción. Un IVA mal copiado, una fila pegada donde no iba, un email que nadie reenvió.",
   },
   {
-    icon: TrendingDown,
-    title: "Visibilidad cero sobre tus operaciones",
-    description:
-      "Sin datos en tiempo real, tomar decisiones es adivinar. No sabes qué funciona y qué está frenando tu crecimiento.",
+    figure: "1 persona",
+    label: "irreemplazable",
+    text: "que es la única que sabe cómo va ese Excel. Si se va de vacaciones, el proceso se para.",
   },
 ];
 
 export default function Pain() {
   return (
-    <section className="py-16 lg:py-28 relative" id="pain">
-      <div className="max-w-[1200px] mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 52 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-[560px] mb-10 lg:mb-16"
-        >
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-widest uppercase mb-5"
-            style={{
-              background: "rgba(239,68,68,0.1)",
-              border: "1px solid rgba(239,68,68,0.2)",
-              color: "#f87171",
-            }}
-          >
-            El problema
-          </div>
-          <h2 className="text-4xl font-black tracking-[-0.025em] leading-[1.1] mb-5">
-            ¿Cuántas horas pierde tu equipo{" "}
-            <span style={{ color: "#f87171" }}>cada semana?</span>
+    <section id="problema" className="py-20 lg:py-28">
+      <div className="mx-auto w-[min(1180px,92vw)]">
+        <Reveal>
+          <span className="mono" style={{ color: "var(--signal)" }}>
+            01 — el problema
+          </span>
+        </Reveal>
+        <Reveal delay={0.05}>
+          <h2 className="font-display mt-5 max-w-[22ch] text-[clamp(2rem,4vw,3.1rem)] font-extrabold leading-[1.06] tracking-[-0.038em]">
+            Lo que se hace a mano no es gratis. Sólo es invisible.
           </h2>
-          <p className="text-[16px] leading-relaxed" style={{ color: "var(--bd-muted)" }}>
-            La mayoría de pymes y startups operan con procesos diseñados para
-            cuando eran pequeños. A medida que creces, esos procesos manuales
-            se convierten en el mayor freno de tu empresa.
+        </Reveal>
+        <Reveal delay={0.1}>
+          <p className="mt-6 max-w-[46ch] text-[1.02rem] leading-[1.7]" style={{ color: "var(--ink-soft)" }}>
+            Nadie apunta en ninguna parte las horas que se van en tareas que
+            podría hacer una máquina. Por eso nunca aparecen en la cuenta de
+            resultados, y por eso nunca se arreglan.
           </p>
-        </motion.div>
+        </Reveal>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          {pains.map((pain, i) => {
-            const Icon = pain.icon;
-            return (
-              <motion.div
-                key={pain.title}
-                initial={{ opacity: 0, y: 52 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.15 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="rounded-xl group cursor-default overflow-hidden"
-                style={{
-                  background: "var(--bd-card)",
-                  border: "1px solid var(--bd-border)",
-                  transition: "border-color 0.2s, box-shadow 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(239,68,68,0.3)";
-                  e.currentTarget.style.boxShadow = "0 8px 32px rgba(239,68,68,0.07)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "var(--bd-border)";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-              >
-                {/* Accent top bar */}
+        <div className="mt-14 grid gap-px sm:grid-cols-2" style={{ background: "var(--line)" }}>
+          {COSTS.map((cost, i) => (
+            <Reveal key={cost.figure} delay={0.05 * i}>
+              <div className="h-full p-8" style={{ background: "var(--paper)" }}>
                 <div
-                  className="h-[2px] w-full"
-                  style={{ background: "linear-gradient(90deg, rgba(239,68,68,0.7), rgba(239,68,68,0.1))" }}
-                />
-                <div className="p-6">
-                  <div
-                    className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
-                    style={{
-                      background: "rgba(239,68,68,0.1)",
-                      border: "1px solid rgba(239,68,68,0.2)",
-                    }}
-                  >
-                    <Icon size={20} color="#f87171" />
-                  </div>
-                  <h3 className="text-[15px] font-bold mb-2 tracking-tight">
-                    {pain.title}
-                  </h3>
-                  <p className="text-[13px] leading-relaxed" style={{ color: "var(--bd-muted)" }}>
-                    {pain.description}
-                  </p>
+                  className="font-display text-[2rem] font-extrabold tracking-[-0.04em]"
+                  style={{ color: "var(--signal)" }}
+                >
+                  {cost.figure}
                 </div>
-              </motion.div>
-            );
-          })}
+                <div className="mono mt-2" style={{ color: "var(--ink-faint)" }}>
+                  {cost.label}
+                </div>
+                <p className="mt-4 text-[0.95rem] leading-[1.65]" style={{ color: "var(--ink-soft)" }}>
+                  {cost.text}
+                </p>
+              </div>
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>

@@ -1,33 +1,33 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Minus } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import Reveal from "@/components/Reveal";
 
-const faqs = [
+const QUESTIONS = [
   {
-    q: "¿Esto será muy caro para mi empresa?",
-    a: "El coste depende del alcance, pero siempre lo diseñamos para que el ROI sea positivo en los primeros meses. La mayoría de clientes recuperan la inversión antes de los 90 días gracias al tiempo y dinero que ahorran. Empezamos con un análisis gratuito para darte un presupuesto claro antes de comprometerte a nada.",
+    q: "¿Cuánto cuesta la primera consultoría?",
+    a: "Nada. Sentarnos contigo, mirar cómo trabajáis y decirte dónde se te van las horas y qué tiene sentido automatizar no se cobra. De ahí sales sabiendo en qué podemos ayudarte, aunque después no trabajes con nosotros. Lo único que se presupuesta es el desarrollo, y siempre con precio cerrado antes de empezar: ni horas abiertas ni facturas que crecen por el camino.",
   },
   {
-    q: "¿Qué hacéis exactamente? ¿Es solo software?",
-    a: "Somos desarrolladores de software a medida especializados en automatización de procesos. Construimos integraciones entre tus herramientas existentes, flujos automáticos, dashboards y aplicaciones propias. No vendemos plantillas ni soluciones genéricas: todo lo que hacemos está pensado para tu empresa concreta.",
+    q: "¿Tengo que cambiar de programas?",
+    a: "Casi nunca. Trabajamos encima de lo que ya usas. Si tu ERP tiene API, la usamos; si no la tiene, buscamos otra vía. Cambiar de sistema es la última opción, no la primera.",
   },
   {
-    q: "¿Por qué confiar en vosotros si no os conozco?",
-    a: "Tenemos +4 aplicaciones en producción real, dos de ellas adoptadas oficialmente por la Federación Asturiana y la Federación Balear de Voleibol. Eso significa que nuestro software funciona en entornos reales y exigentes. Empezamos siempre con un análisis sin compromiso para que veas nuestra forma de trabajar antes de tomar ninguna decisión.",
+    q: "¿Y si mi equipo no es técnico?",
+    a: "Mejor. Los sistemas que construimos los usa gente que no sabe programar: entrenadores, administrativos, comerciales. Si hace falta un manual de veinte páginas, está mal diseñado.",
   },
   {
-    q: "¿Cuánto tiempo tarda en estar listo?",
-    a: "Depende del proyecto, pero un primer proceso automatizado suele estar funcionando en 2–4 semanas desde que arrancamos. Nuestra metodología prioriza los cambios que dan más impacto desde el primer día, para que veas resultados antes de terminar el proyecto completo.",
+    q: "¿Esto es montar un ChatGPT en mi empresa?",
+    a: "No. La mayoría de procesos que quitan horas no necesitan un modelo de lenguaje: necesitan que dos sistemas se hablen y que nadie copie nada a mano. Cuando la IA aporta de verdad, la usamos; cuando no, te lo decimos.",
   },
   {
-    q: "¿Necesito saber de tecnología para trabajar con vosotros?",
-    a: "Para nada. Tú nos explicas cómo trabajas y qué problemas tienes. Nosotros nos encargamos de toda la parte técnica. La única implicación que necesitamos de tu lado es entender bien tu proceso actual, y para eso hacemos una sesión de análisis guiada y sencilla.",
+    q: "¿Qué pasa si os vais?",
+    a: "El código es tuyo y se queda en tu repositorio, documentado. No usamos plataformas que te aten ni licencias nuestras. Si mañana quieres llevártelo a otro equipo, puedes.",
   },
   {
-    q: "¿Qué pasa si el proyecto no funciona como esperábamos?",
-    a: "Antes de construir nada, validamos contigo el enfoque y los resultados esperados. Trabajamos de forma iterativa, así que si algo no va como esperábamos lo ajustamos. Nunca desaparecemos al entregar: ofrecemos soporte y acompañamiento una vez que la solución está en marcha.",
+    q: "¿Trabajáis con empresas pequeñas?",
+    a: "Sí. De hecho es donde más se nota: en una empresa de diez personas, recuperar 40 horas al mes es como contratar a alguien más sin pagar una nómina.",
   },
 ];
 
@@ -36,94 +36,68 @@ export default function FAQ() {
 
   return (
     <section
-      className="py-16 lg:py-28 relative"
-      id="faq"
-      style={{ borderTop: "1px solid var(--bd-border)" }}
+      className="py-20 lg:py-28"
+      style={{ borderTop: "1px solid var(--line)", background: "var(--paper-warm)" }}
     >
-      <div className="max-w-[1200px] mx-auto px-6">
-        <div className="grid lg:grid-cols-[1fr_2fr] gap-8 lg:gap-16">
-          <motion.div
-            initial={{ opacity: 0, y: 52 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.12 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-widest uppercase mb-5"
-              style={{
-                background: "var(--bd-blue-dim)",
-                border: "1px solid var(--bd-blue-border)",
-                color: "var(--bd-blue)",
-              }}
-            >
-              FAQ
-            </div>
-            <h2 className="text-4xl font-black tracking-[-0.025em] leading-[1.1] mb-4">
-              Preguntas{" "}
-              <span className="text-gradient-blue">frecuentes</span>
+      <div className="mx-auto grid w-[min(1180px,92vw)] gap-12 lg:grid-cols-[0.8fr_1.2fr]">
+        <div>
+          <Reveal>
+            <span className="mono" style={{ color: "var(--blue)" }}>
+              06 — dudas
+            </span>
+          </Reveal>
+          <Reveal delay={0.05}>
+            <h2 className="font-display mt-5 text-[clamp(2rem,4vw,3.1rem)] font-extrabold leading-[1.06] tracking-[-0.038em]">
+              Lo que nos preguntan siempre
             </h2>
-            <p className="text-[15px] leading-relaxed" style={{ color: "var(--bd-muted)" }}>
-              Las dudas más comunes antes de dar el paso.
-            </p>
-          </motion.div>
+          </Reveal>
+        </div>
 
-          <div className="space-y-2">
-            {faqs.map((faq, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 36 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.12 }}
-                transition={{ duration: 0.4, delay: i * 0.06 }}
-                className="rounded-xl overflow-hidden"
-                style={{
-                  background: open === i ? "var(--bd-elevated)" : "var(--bd-card)",
-                  border: `1px solid ${open === i ? "var(--bd-blue-border)" : "var(--bd-border)"}`,
-                }}
-              >
+        <div style={{ borderTop: "1px solid var(--line-strong)" }}>
+          {QUESTIONS.map((item, i) => {
+            const isOpen = open === i;
+            return (
+              <div key={item.q} style={{ borderBottom: "1px solid var(--line)" }}>
                 <button
-                  onClick={() => setOpen(open === i ? null : i)}
-                  className="w-full flex items-center justify-between gap-4 p-5 text-left"
+                  type="button"
+                  onClick={() => setOpen(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  className="flex w-full items-center justify-between gap-6 py-5 text-left"
                 >
-                  <span className="text-[14px] font-semibold leading-snug">
-                    {faq.q}
+                  <span className="font-display text-[1.06rem] font-bold tracking-[-0.02em]">
+                    {item.q}
                   </span>
-                  <div
-                    className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
+                  <span
+                    className="mono shrink-0 transition-transform duration-200"
                     style={{
-                      background: open === i ? "var(--bd-blue)" : "var(--bd-border-strong)",
+                      color: isOpen ? "var(--signal)" : "var(--ink-faint)",
+                      transform: isOpen ? "rotate(45deg)" : "none",
                     }}
                   >
-                    {open === i ? (
-                      <Minus size={12} color="#fff" />
-                    ) : (
-                      <Plus size={12} color="rgba(255,255,255,0.6)" />
-                    )}
-                  </div>
+                    +
+                  </span>
                 </button>
-
                 <AnimatePresence initial={false}>
-                  {open === i && (
+                  {isOpen && (
                     <motion.div
-                      key="content"
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                      style={{ overflow: "hidden" }}
+                      transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                      className="overflow-hidden"
                     >
-                      <div
-                        className="px-5 pb-5 text-[13px] leading-relaxed"
-                        style={{ color: "var(--bd-muted)" }}
+                      <p
+                        className="max-w-[60ch] pb-6 text-[0.96rem] leading-[1.7]"
+                        style={{ color: "var(--ink-soft)" }}
                       >
-                        {faq.a}
-                      </div>
+                        {item.a}
+                      </p>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
-            ))}
-          </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bluedebug — v2 · sin blur, sin glass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=Archivo:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:Inter,system-ui,sans-serif;background:#111}
+  .chooser{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;gap:6px;justify-content:center;
+    padding:10px;background:#111;border-bottom:1px solid #2a2a2a;font-size:12px;font-weight:600}
+  .chooser a{color:#999;text-decoration:none;padding:7px 14px;border:1px solid #333;transition:.15s}
+  .chooser a:hover{color:#fff;border-color:#fff}
+  .label{position:absolute;top:60px;left:0;z-index:20;font:600 10px/1 'IBM Plex Mono',monospace;
+    letter-spacing:.24em;text-transform:uppercase;padding:9px 18px}
+  .pick{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;cursor:pointer;
+    font:600 11px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;
+    padding:14px 28px;border:0;transition:.16s}
+  section{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;padding:120px 0 96px}
+  .wrap{width:min(1180px,90vw);margin:0 auto;position:relative;z-index:5}
+  .row{display:grid;grid-template-columns:1.02fr .98fr;gap:64px;align-items:center}
+  @media(max-width:920px){.row{grid-template-columns:1fr;gap:44px}.side{display:none}}
+  .fade{opacity:0;transform:translateY(22px);animation:fade .8s cubic-bezier(.22,1,.36,1) forwards}
+  @keyframes fade{to{opacity:1;transform:none}}
+  .d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.32s}.d4{animation-delay:.44s}.d5{animation-delay:.58s}
+  .draw{stroke-dasharray:1000;stroke-dashoffset:1000;animation:draw 2.2s .4s cubic-bezier(.65,0,.35,1) forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+
+  /* ═══ B2 · TECHNICAL BLUEPRINT ═══ */
+  #b{background:#F5F7F9;color:#10202E;--ac:#0B6EB4;--sg:#E8590C}
+  #b .grid{position:absolute;inset:0;
+    background-image:linear-gradient(rgba(16,32,46,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(16,32,46,.07) 1px,transparent 1px);
+    background-size:44px 44px}
+  #b .grid2{position:absolute;inset:0;
+    background-image:linear-gradient(rgba(11,110,180,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(11,110,180,.16) 1px,transparent 1px);
+    background-size:220px 220px}
+  #b .scan{position:absolute;left:0;right:0;height:2px;background:var(--ac);opacity:.22;animation:scan 6s linear infinite}
+  @keyframes scan{0%{top:0}100%{top:100%}}
+  #b .mono{font:500 10.5px/1.6 'IBM Plex Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--ac)}
+  #b h1{font-size:clamp(2.5rem,5.4vw,4.3rem);font-weight:800;letter-spacing:-.04em;line-height:1.04}
+  #b h1 mark{background:0;color:var(--sg)}
+  #b p{font-size:1.05rem;line-height:1.68;color:#4A5F72;max-width:29rem;margin:1.5rem 0 2.2rem}
+  #b .cta{display:inline-flex;align-items:center;gap:10px;font:600 .88rem/1 Inter;padding:16px 28px;
+    background:var(--ac);color:#fff;text-decoration:none;transition:.16s}
+  #b .cta:hover{background:#10202E}
+  #b .card{background:#fff;border:1px solid rgba(16,32,46,.14)}
+  #b .corner{position:absolute;width:9px;height:9px;border:1.5px solid var(--ac)}
+  #b .blink{animation:bl 1.1s steps(2) infinite}
+  @keyframes bl{50%{opacity:0}}
+  #b .pkt{animation:pkt 2.6s linear infinite}
+  @keyframes pkt{0%{offset-distance:0%;opacity:0}10%{opacity:1}90%{opacity:1}100%{offset-distance:100%;opacity:0}}
+
+  /* ═══ C2 · SWISS KINETIC ═══ */
+  #c{background:#fff;color:#0A0A0A;--ac:#0038FF}
+  #c .rule{position:absolute;left:0;right:0;height:1px;background:#0A0A0A;transform:scaleX(0);transform-origin:left;
+    animation:rl 1.1s .2s cubic-bezier(.76,0,.24,1) forwards}
+  @keyframes rl{to{transform:scaleX(1)}}
+  #c .vr{position:absolute;top:0;bottom:0;width:1px;background:rgba(10,10,10,.11);transform:scaleY(0);transform-origin:top;
+    animation:vrl 1.2s .4s cubic-bezier(.76,0,.24,1) forwards}
+  @keyframes vrl{to{transform:scaleY(1)}}
+  #c h1{font-family:Archivo,Inter,sans-serif;font-size:clamp(3rem,8.4vw,7rem);font-weight:900;
+    letter-spacing:-.055em;line-height:.9;text-transform:uppercase}
+  #c .ov{overflow:hidden;display:block}
+  #c .word{display:block;transform:translateY(105%);animation:up .9s cubic-bezier(.22,1,.36,1) forwards}
+  @keyframes up{to{transform:none}}
+  #c .blue{color:var(--ac)}
+  #c p{font-size:1.02rem;line-height:1.62;color:#555;max-width:26rem;margin:0 0 2rem}
+  #c .cta{display:inline-flex;align-items:center;gap:12px;font:600 .84rem/1 'IBM Plex Mono',monospace;
+    letter-spacing:.12em;text-transform:uppercase;padding:17px 32px;background:var(--ac);color:#fff;text-decoration:none;transition:.16s}
+  #c .cta:hover{background:#0A0A0A}
+  #c .meta{font:600 10px/1.5 'IBM Plex Mono',monospace;letter-spacing:.24em;text-transform:uppercase;color:#999}
+  #c .num{font-family:Archivo;font-size:clamp(2.2rem,4vw,3.2rem);font-weight:800;letter-spacing:-.045em}
+  #c .mq{position:absolute;bottom:0;left:0;right:0;border-top:1px solid #0A0A0A;padding:16px 0;overflow:hidden;white-space:nowrap}
+  #c .mq div{display:inline-block;animation:mq 26s linear infinite;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;text-transform:uppercase}
+  @keyframes mq{to{transform:translateX(-50%)}}
+
+  /* ═══ E · PRECISION INK ═══ */
+  #e{background:#F2EFE9;color:#14120F;--ac:#0F4C81;--sg:#C4501E}
+  #e .dots{position:absolute;inset:0;background-image:radial-gradient(rgba(20,18,15,.16) 1px,transparent 1px);
+    background-size:13px 13px;animation:dr 30s linear infinite}
+  @keyframes dr{to{background-position:130px 78px}}
+  #e .mono{font:500 10.5px/1.6 'IBM Plex Mono',monospace;letter-spacing:.22em;text-transform:uppercase;color:var(--sg)}
+  #e h1{font-family:Archivo,Inter,sans-serif;font-size:clamp(2.6rem,5.8vw,4.6rem);font-weight:800;
+    letter-spacing:-.038em;line-height:1.02}
+  #e h1 u{text-decoration:none;position:relative;color:var(--ac)}
+  #e h1 u::after{content:"";position:absolute;left:-2px;right:-2px;bottom:.02em;height:3px;background:var(--sg);
+    transform:scaleX(0);transform-origin:left;animation:ul 1s 1s cubic-bezier(.76,0,.24,1) forwards}
+  @keyframes ul{to{transform:scaleX(1)}}
+  #e p{font-size:1.06rem;line-height:1.7;color:#4A443C;max-width:29rem;margin:1.5rem 0 2.3rem}
+  #e .cta{display:inline-flex;align-items:center;gap:11px;font:600 .88rem/1 Inter;padding:16px 30px;
+    background:#14120F;color:#F2EFE9;text-decoration:none;transition:.18s;box-shadow:5px 5px 0 var(--sg)}
+  #e .cta:hover{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--sg)}
+  #e .hair{border:1px solid rgba(20,18,15,.22);background:#F8F6F2}
+  #e .stamp{position:absolute;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;
+    text-transform:uppercase;color:rgba(20,18,15,.34)}
+  #e .tw{overflow:hidden;white-space:nowrap;border-right:2px solid var(--sg);width:0;
+    animation:tw 2.6s 1.2s steps(34) forwards, bl 1s step-end infinite}
+  @keyframes tw{to{width:23ch}}
+</style>
+</head>
+<body>
+
+<nav class="chooser">
+  <a href="#b">B2 · Technical Blueprint</a>
+  <a href="#c">C2 · Swiss Kinetic</a>
+  <a href="#e">E · Precision Ink</a>
+</nav>
+
+<!-- ═══ B2 ═══ -->
+<section id="b">
+  <div class="grid"></div><div class="grid2"></div><div class="scan"></div>
+  <div class="label" style="background:#0B6EB4;color:#fff">B2 · Technical Blueprint</div>
+  <div class="wrap row">
+    <div>
+      <div class="mono fade d1">Bluedebug / sys.auto — v2.0<span class="blink">▮</span></div>
+      <h1 class="fade d2" style="margin-top:22px">Tus procesos,<br>depurados y<br><mark>automatizados</mark></h1>
+      <p class="fade d3">Auditamos tu operativa, localizamos los cuellos de botella y los sustituimos por sistemas que corren sin supervisión.</p>
+      <div class="fade d4"><a class="cta" href="#b">Agendar llamada gratuita ⟶</a></div>
+      <div class="mono fade d5" style="margin-top:36px;display:flex;gap:28px;color:#7A8FA3;flex-wrap:wrap">
+        <span>04 apps en producción</span><span>02 federaciones</span><span>0 papel</span>
+      </div>
+    </div>
+    <div class="side fade d5">
+      <div class="card" style="padding:26px;position:relative">
+        <span class="corner" style="top:-1px;left:-1px;border-right:0;border-bottom:0"></span>
+        <span class="corner" style="top:-1px;right:-1px;border-left:0;border-bottom:0"></span>
+        <span class="corner" style="bottom:-1px;left:-1px;border-right:0;border-top:0"></span>
+        <span class="corner" style="bottom:-1px;right:-1px;border-left:0;border-top:0"></span>
+        <div class="mono" style="margin-bottom:20px">fig. 01 — pipeline / runtime</div>
+        <svg viewBox="0 0 380 170" style="width:100%;height:auto">
+          <g fill="none" stroke="#0B6EB4" stroke-width="1.4">
+            <rect class="draw" x="6" y="62" width="62" height="46"/>
+            <rect class="draw" style="animation-delay:.6s" x="159" y="20" width="62" height="46"/>
+            <rect class="draw" style="animation-delay:.75s" x="159" y="104" width="62" height="46"/>
+            <rect class="draw" style="animation-delay:1s" x="312" y="62" width="62" height="46"/>
+            <path class="draw" style="animation-delay:.9s" d="M68 85 H113 V43 H159"/>
+            <path class="draw" style="animation-delay:1s" d="M68 85 H113 V127 H159"/>
+            <path class="draw" style="animation-delay:1.2s" d="M221 43 H266 V85 H312"/>
+            <path class="draw" style="animation-delay:1.3s" d="M221 127 H266 V85"/>
+          </g>
+          <g fill="#10202E" font-family="IBM Plex Mono" font-size="8.5" letter-spacing="1">
+            <text x="20" y="89">INPUT</text><text x="172" y="47">PARSE</text>
+            <text x="172" y="131">CHECK</text><text x="326" y="89">OUTPUT</text>
+          </g>
+          <circle r="3.5" fill="#E8590C"><animateMotion dur="3s" repeatCount="indefinite" path="M68 85 H113 V43 H159 M221 43 H266 V85 H312"/></circle>
+          <circle r="3.5" fill="#0B6EB4"><animateMotion dur="3.4s" begin=".8s" repeatCount="indefinite" path="M68 85 H113 V127 H159 M221 127 H266 V85 H312"/></circle>
+        </svg>
+        <div style="border-top:1px solid rgba(16,32,46,.14);margin-top:20px;padding-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+          <div><div style="font-size:1.8rem;font-weight:800;letter-spacing:-.03em"><span class="ct" data-to="40">0</span>h</div><div class="mono" style="color:#7A8FA3">/ mes</div></div>
+          <div><div style="font-size:1.8rem;font-weight:800;letter-spacing:-.03em"><span class="ct" data-to="32" data-dec="1">0</span>×</div><div class="mono" style="color:#7A8FA3">roi 90d</div></div>
+          <div><div style="font-size:1.8rem;font-weight:800;letter-spacing:-.03em;color:#E8590C">00</div><div class="mono" style="color:#7A8FA3">errores</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="pick" data-code="B2" style="background:#0B6EB4;color:#fff">Elegir B2 · Technical Blueprint</button>
+</section>
+
+<!-- ═══ C2 ═══ -->
+<section id="c">
+  <div class="rule" style="top:92px"></div>
+  <div class="vr" style="left:25%"></div><div class="vr" style="left:50%"></div><div class="vr" style="left:75%"></div>
+  <div class="label" style="background:#0A0A0A;color:#fff">C2 · Swiss Kinetic</div>
+  <div class="wrap">
+    <div class="meta fade d1" style="margin-bottom:30px">Bluedebug — automatización empresarial · madrid · es</div>
+    <h1>
+      <span class="ov"><span class="word" style="animation-delay:.15s">Menos</span></span>
+      <span class="ov"><span class="word" style="animation-delay:.27s">tareas.</span></span>
+      <span class="ov"><span class="word blue" style="animation-delay:.39s">Más empresa.</span></span>
+    </h1>
+    <div class="row" style="margin-top:52px;align-items:end">
+      <div>
+        <p class="fade d4">Diseñamos y construimos los sistemas que borran el trabajo manual de tu operativa. Sin humo. Sin dependencias eternas.</p>
+        <div class="fade d5"><a class="cta" href="#c">Agendar llamada ⟶</a></div>
+      </div>
+      <div class="side fade d5" style="display:grid;grid-template-columns:repeat(3,1fr);border-top:2px solid #0A0A0A">
+        <div style="padding:24px 14px;border-right:1px solid rgba(10,10,10,.11)"><div class="num"><span class="ct" data-to="40">0</span>h</div><div class="meta" style="margin-top:8px">ahorro/mes</div></div>
+        <div style="padding:24px 14px;border-right:1px solid rgba(10,10,10,.11)"><div class="num blue"><span class="ct" data-to="32" data-dec="1">0</span>×</div><div class="meta" style="margin-top:8px">roi 90 días</div></div>
+        <div style="padding:24px 14px"><div class="num"><span class="ct" data-to="4" data-pad="1">0</span></div><div class="meta" style="margin-top:8px">apps live</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mq"><div>VBStats · AlignMe · DreamLeague · FVPA · FVBIB · Automatización · Integraciones · Dashboards · VBStats · AlignMe · DreamLeague · FVPA · FVBIB · Automatización · Integraciones · Dashboards · </div></div>
+  <button class="pick" data-code="C2" style="background:#0038FF;color:#fff;bottom:76px">Elegir C2 · Swiss Kinetic</button>
+</section>
+
+<!-- ═══ E ═══ -->
+<section id="e">
+  <div class="dots"></div>
+  <div class="label" style="background:#14120F;color:#F2EFE9">E · Precision Ink</div>
+  <div class="stamp" style="top:64px;right:0">exp. 2026 / bd — 004</div>
+  <div class="wrap row">
+    <div>
+      <div class="mono fade d1">Ingeniería de procesos · desde 2023</div>
+      <h1 class="fade d2" style="margin-top:22px">El trabajo manual<br>que sobra, <u>fuera</u></h1>
+      <p class="fade d3">No vendemos "IA". Auditamos lo que hace tu equipo a mano, lo medimos en horas, y construimos el sistema que lo sustituye.</p>
+      <div class="mono tw" style="margin-bottom:26px;color:#4A443C">&gt; midiendo horas...</div>
+      <div class="fade d4"><a class="cta" href="#e">Agendar llamada gratuita ⟶</a></div>
+    </div>
+    <div class="side fade d5">
+      <div class="hair" style="padding:26px">
+        <div class="mono" style="margin-bottom:8px">fig. 02 — antes / después</div>
+        <svg viewBox="0 0 360 180" style="width:100%;height:auto">
+          <g stroke="rgba(20,18,15,.2)" stroke-width="1">
+            <line x1="30" y1="10" x2="30" y2="150"/><line x1="30" y1="150" x2="345" y2="150"/>
+            <line class="draw" x1="30" y1="112" x2="345" y2="112" stroke-dasharray="4 4"/>
+            <line class="draw" style="animation-delay:.2s" x1="30" y1="74" x2="345" y2="74" stroke-dasharray="4 4"/>
+            <line class="draw" style="animation-delay:.4s" x1="30" y1="36" x2="345" y2="36" stroke-dasharray="4 4"/>
+          </g>
+          <path class="draw" style="animation-delay:.6s" d="M38 40 L110 46 L182 38 L254 44 L330 40" fill="none" stroke="#C4501E" stroke-width="2.2"/>
+          <path class="draw" style="animation-delay:1.1s" d="M38 42 L110 70 L182 96 L254 122 L330 138" fill="none" stroke="#0F4C81" stroke-width="2.2"/>
+          <g font-family="IBM Plex Mono" font-size="8.5" letter-spacing="1">
+            <text x="38" y="26" fill="#C4501E">MANUAL</text>
+            <text x="272" y="132" fill="#0F4C81">AUTOMATIZADO</text>
+          </g>
+        </svg>
+        <div style="border-top:1px solid rgba(20,18,15,.2);margin-top:18px;padding-top:16px;display:flex;justify-content:space-between">
+          <div><div style="font-family:Archivo;font-size:1.8rem;font-weight:800;letter-spacing:-.03em"><span class="ct" data-to="40">0</span>h</div><div class="mono" style="color:#8A8278">recuperadas/mes</div></div>
+          <div style="text-align:right"><div style="font-family:Archivo;font-size:1.8rem;font-weight:800;letter-spacing:-.03em;color:#0F4C81"><span class="ct" data-to="32" data-dec="1">0</span>×</div><div class="mono" style="color:#8A8278">roi 90 días</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="pick" data-code="E" style="background:#14120F;color:#F2EFE9">Elegir E · Precision Ink</button>
+</section>
+
+<script>
+document.querySelectorAll('.pick').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const code='ESTILO:'+b.dataset.code;
+    navigator.clipboard?.writeText(code);
+    const t=b.textContent;b.textContent='✓ copiado '+code;
+    setTimeout(()=>b.textContent=t,2200);
+  });
+});
+const io=new IntersectionObserver(es=>es.forEach(en=>{
+  if(!en.isIntersecting||en.target.dataset.done)return;
+  en.target.dataset.done=1;
+  const to=+en.target.dataset.to, dec=+en.target.dataset.dec||0, pad=+en.target.dataset.pad||0;
+  let i=0;const st=performance.now();
+  const tick=n=>{
+    const p=Math.min((n-st)/1100,1), v=to*(1-Math.pow(1-p,3));
+    let out=dec?(v/10).toFixed(1):Math.round(v).toString();
+    if(pad&&!dec)out=out.padStart(2,'0');
+    en.target.textContent=out;
+    if(p<1)requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}),{threshold:.4});
+document.querySelectorAll('.ct').forEach(e=>io.observe(e));
+</script>
+</body>
+</html>

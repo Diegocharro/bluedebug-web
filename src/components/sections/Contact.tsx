@@ -1,18 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Send, CheckCircle } from "lucide-react";
+import { motion } from "motion/react";
+import Reveal from "@/components/Reveal";
+import { site } from "@/lib/site-config";
 
-const areas = [
-  "Automatización de tareas repetitivas",
-  "Integración entre sistemas",
-  "Dashboard y reportes automáticos",
-  "App o herramienta a medida",
-  "Otro / No lo tengo claro aún",
+const AREAS = [
+  "Tareas repetitivas",
+  "Integrar sistemas",
+  "Paneles y datos",
+  "App a medida",
+  "Aún no lo tengo claro",
 ];
 
-type FormState = "idle" | "loading" | "success";
+type State = "idle" | "sending" | "sent" | "error" | "unconfigured";
 
 export default function Contact() {
   const [form, setForm] = useState({
@@ -22,147 +23,103 @@ export default function Contact() {
     area: "",
     message: "",
   });
-  const [formState, setFormState] = useState<FormState>("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [state, setState] = useState<State>("idle");
 
-  function validate() {
-    const e: Record<string, string> = {};
-    if (!form.name.trim()) e.name = "Nombre requerido";
-    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      e.email = "Email válido requerido";
-    if (!form.area) e.area = "Selecciona una opción";
-    return e;
-  }
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    const next: Record<string, string> = {};
+    if (!form.name.trim()) next.name = "Hace falta tu nombre";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) next.email = "Email no válido";
+    if (!form.area) next.area = "Elige una opción";
+    setErrors(next);
+    if (Object.keys(next).length > 0) return;
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const errs = validate();
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs);
-      return;
+    setState("sending");
+    try {
+      const response = await fetch("/api/contacto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await response.json().catch(() => null);
+      if (response.ok) setState("sent");
+      else if (data?.error === "unconfigured") setState("unconfigured");
+      else setState("error");
+    } catch {
+      setState("error");
     }
-    setErrors({});
-    setFormState("loading");
-    await new Promise((r) => setTimeout(r, 1200));
-    setFormState("success");
-  }
-
-  if (formState === "success") {
-    return (
-      <section className="py-16 lg:py-28" id="contact" style={{ borderTop: "1px solid var(--bd-border)" }}>
-        <div className="max-w-[600px] mx-auto px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="p-12 rounded-2xl"
-            style={{ background: "var(--bd-card)", border: "1px solid var(--bd-blue-border)" }}
-          >
-            <CheckCircle size={48} style={{ color: "var(--bd-blue)" }} className="mx-auto mb-5" />
-            <h3 className="text-2xl font-black mb-3 tracking-tight">¡Mensaje enviado!</h3>
-            <p style={{ color: "var(--bd-muted)" }} className="text-[15px] leading-relaxed">
-              Te contactaremos en menos de 24 horas para coordinar la llamada.
-              Revisa tu bandeja de entrada (y el spam, por si acaso).
-            </p>
-          </motion.div>
-        </div>
-      </section>
-    );
   }
 
   return (
-    <section
-      className="py-16 lg:py-28 relative overflow-hidden"
-      id="contact"
-      style={{ borderTop: "1px solid var(--bd-border)" }}
-    >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 60% at 50% 0%, rgba(8,146,208,0.07) 0%, transparent 70%)",
-        }}
-      />
-
-      <div className="max-w-[1200px] mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-          {/* Left: copy */}
-          <motion.div
-            initial={{ opacity: 0, y: 52 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-widest uppercase mb-5"
-              style={{
-                background: "var(--bd-blue-dim)",
-                border: "1px solid var(--bd-blue-border)",
-                color: "var(--bd-blue)",
-              }}
-            >
-              Agenda una llamada
-            </div>
-            <h2 className="text-4xl font-black tracking-[-0.025em] leading-[1.1] mb-5">
-              Cuéntanos qué necesitas.{" "}
-              <span className="text-gradient-blue">Te llamamos nosotros.</span>
+    <section id="contacto" className="blueprint py-20 lg:py-28" style={{ borderTop: "1px solid var(--line)" }}>
+      <div className="mx-auto grid w-[min(1180px,92vw)] gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+        <div>
+          <Reveal>
+            <span className="mono" style={{ color: "var(--signal)" }}>
+              07 — hablemos
+            </span>
+          </Reveal>
+          <Reveal delay={0.05}>
+            <h2 className="font-display mt-5 max-w-[16ch] text-[clamp(2rem,4vw,3.1rem)] font-extrabold leading-[1.06] tracking-[-0.038em]">
+              Cuéntanos qué se hace a mano en tu empresa
             </h2>
-            <p className="text-[16px] leading-relaxed mb-8" style={{ color: "var(--bd-muted)" }}>
-              Rellena el formulario y uno de nuestros especialistas te contactará
-              en menos de 24 horas para una primera llamada sin compromiso donde
-              analizaremos si podemos ayudarte.
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="mt-6 max-w-[42ch] text-[1rem] leading-[1.7]" style={{ color: "var(--ink-soft)" }}>
+              Una llamada, sin compromiso. Salimos de ahí sabiendo los dos si
+              esto tiene sentido o no. Si no lo tiene, te lo decimos en esa
+              misma llamada.
             </p>
-
-            <div className="space-y-4">
+          </Reveal>
+          <Reveal delay={0.15}>
+            <ul className="mt-8 flex flex-col gap-3">
               {[
-                { icon: "✓", text: "Primera llamada gratuita de 30 min" },
-                { icon: "✓", text: "Análisis de viabilidad sin compromiso" },
-                { icon: "✓", text: "Presupuesto detallado antes de firmar nada" },
-              ].map((item, i) => (
-                <motion.div
-                  key={item.text}
-                  initial={{ opacity: 0, x: -24 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.4, delay: 0.3 + i * 0.1 }}
-                  className="flex items-center gap-3"
-                >
-                  <span
-                    className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0"
-                    style={{ background: "var(--bd-blue-dim)", color: "var(--bd-blue)" }}
-                  >
-                    {item.icon}
+                "Primera llamada gratis y sin compromiso",
+                "Presupuesto cerrado antes de firmar nada",
+                "Sin permanencias ni licencias nuestras",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3 text-[0.95rem]" style={{ color: "var(--ink-soft)" }}>
+                  <span className="mono mt-0.5" style={{ color: "var(--blue)" }}>
+                    ✓
                   </span>
-                  <span className="text-[14px]" style={{ color: "var(--bd-muted)" }}>
-                    {item.text}
-                  </span>
-                </motion.div>
+                  {item}
+                </li>
               ))}
-            </div>
-          </motion.div>
+            </ul>
+          </Reveal>
+        </div>
 
-          {/* Right: form */}
-          <motion.div
-            initial={{ opacity: 0, y: 52 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
+        <Reveal delay={0.1}>
+          {state === "sent" ? (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="cornered p-10"
+              style={{ background: "var(--surface)", border: "1px solid var(--line-strong)" }}
+            >
+              <div className="mono" style={{ color: "var(--blue)" }}>
+                mensaje recibido
+              </div>
+              <h3 className="font-display mt-4 text-[1.6rem] font-extrabold tracking-[-0.03em]">
+                Te escribimos en cuanto lo veamos
+              </h3>
+              <p className="mt-3 text-[0.95rem] leading-[1.7]" style={{ color: "var(--ink-soft)" }}>
+                Revisa también la carpeta de spam, que a veces se cuela ahí.
+              </p>
+            </motion.div>
+          ) : (
             <form
               onSubmit={handleSubmit}
-              className="p-8 rounded-2xl space-y-5"
-              style={{
-                background: "var(--bd-card)",
-                border: "1px solid var(--bd-border-strong)",
-              }}
+              className="cornered flex flex-col gap-5 p-8"
+              style={{ background: "var(--surface)", border: "1px solid var(--line-strong)" }}
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid gap-5 sm:grid-cols-2">
                 <Field
                   label="Nombre *"
                   value={form.name}
                   onChange={(v) => setForm({ ...form, name: v })}
                   error={errors.name}
-                  placeholder="Tu nombre"
                 />
                 <Field
                   label="Email *"
@@ -170,152 +127,130 @@ export default function Contact() {
                   value={form.email}
                   onChange={(v) => setForm({ ...form, email: v })}
                   error={errors.email}
-                  placeholder="tu@empresa.com"
                 />
               </div>
-
               <Field
                 label="Empresa"
                 value={form.company}
                 onChange={(v) => setForm({ ...form, company: v })}
-                placeholder="Nombre de tu empresa"
               />
 
-              {/* Area select */}
               <div>
-                <label
-                  className="block text-[12px] font-semibold mb-2"
-                  style={{ color: "var(--bd-muted)" }}
-                >
-                  ¿Qué quieres automatizar? *
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {areas.map((area) => (
-                    <button
-                      key={area}
-                      type="button"
-                      onClick={() => setForm({ ...form, area })}
-                      className="px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all duration-150"
-                      style={{
-                        background:
-                          form.area === area
-                            ? "var(--bd-blue)"
-                            : "var(--bd-elevated)",
-                        border: `1px solid ${form.area === area ? "var(--bd-blue)" : "var(--bd-border)"}`,
-                        color: form.area === area ? "#fff" : "var(--bd-muted)",
-                      }}
-                    >
-                      {area}
-                    </button>
-                  ))}
+                <span className="mono block" style={{ color: "var(--ink-faint)" }}>
+                  ¿Por dónde empezamos? *
+                </span>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {AREAS.map((area) => {
+                    const active = form.area === area;
+                    return (
+                      <button
+                        key={area}
+                        type="button"
+                        onClick={() => setForm({ ...form, area })}
+                        className="mono px-3 py-2 transition-colors duration-150"
+                        style={{
+                          background: active ? "var(--blue)" : "transparent",
+                          border: `1px solid ${active ? "var(--blue)" : "var(--line-strong)"}`,
+                          color: active ? "#fff" : "var(--ink-soft)",
+                        }}
+                      >
+                        {area}
+                      </button>
+                    );
+                  })}
                 </div>
                 {errors.area && (
-                  <p className="text-[11px] mt-1" style={{ color: "#f87171" }}>
+                  <p className="mono mt-2" style={{ color: "var(--signal)" }}>
                     {errors.area}
                   </p>
                 )}
               </div>
 
-              <div>
-                <label
-                  className="block text-[12px] font-semibold mb-2"
-                  style={{ color: "var(--bd-muted)" }}
-                >
-                  Cuéntanos más (opcional)
-                </label>
+              <label className="block">
+                <span className="mono block" style={{ color: "var(--ink-faint)" }}>
+                  Cuéntanos un poco más
+                </span>
                 <textarea
+                  rows={3}
                   value={form.message}
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  rows={3}
-                  placeholder="Describe brevemente tu situación actual..."
-                  className="w-full px-4 py-3 rounded-lg text-[13px] outline-none resize-none transition-colors duration-150"
+                  placeholder="Qué proceso te está comiendo el tiempo…"
+                  className="mt-2 w-full px-4 py-3 text-[0.92rem] outline-none"
                   style={{
-                    background: "var(--bd-elevated)",
-                    border: "1px solid var(--bd-border-strong)",
-                    color: "#fff",
+                    background: "var(--paper)",
+                    border: "1px solid var(--line-strong)",
+                    color: "var(--ink)",
                   }}
-                  onFocus={(e) =>
-                    (e.currentTarget.style.borderColor = "var(--bd-blue-border)")
-                  }
-                  onBlur={(e) =>
-                    (e.currentTarget.style.borderColor = "var(--bd-border-strong)")
-                  }
                 />
-              </div>
+              </label>
 
               <button
                 type="submit"
-                disabled={formState === "loading"}
-                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-lg text-[14px] font-semibold text-white transition-all duration-200 disabled:opacity-60"
-                style={{ background: "var(--bd-blue)" }}
-                onMouseEnter={(e) => {
-                  if (formState !== "loading")
-                    e.currentTarget.style.background = "#0780bc";
-                }}
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.background = "var(--bd-blue)")
-                }
+                disabled={state === "sending"}
+                className="mt-1 w-full py-4 text-[0.9rem] font-semibold text-white transition-all duration-150 disabled:opacity-60"
+                style={{ background: "var(--ink)", boxShadow: "var(--shadow-hard)" }}
               >
-                {formState === "loading" ? (
-                  <>
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Enviando…
-                  </>
-                ) : (
-                  <>
-                    Agendar llamada gratuita
-                    <Send size={14} />
-                  </>
-                )}
+                {state === "sending" ? "Enviando…" : "Agendar llamada gratuita ⟶"}
               </button>
 
-              <p className="text-center text-[11px]" style={{ color: "var(--bd-subtle)" }}>
-                Sin spam. Te contactamos solo para la llamada.
-              </p>
+              {state === "unconfigured" && (
+                <p className="mono leading-[1.8]" style={{ color: "var(--signal)" }}>
+                  El envío todavía no está conectado. Escríbenos directamente a{" "}
+                  <a href={`mailto:${site.email}`} className="underline">
+                    {site.email}
+                  </a>
+                </p>
+              )}
+              {state === "error" && (
+                <p className="mono leading-[1.8]" style={{ color: "var(--signal)" }}>
+                  No hemos podido enviarlo. Prueba otra vez o escríbenos a{" "}
+                  <a href={`mailto:${site.email}`} className="underline">
+                    {site.email}
+                  </a>
+                </p>
+              )}
             </form>
-          </motion.div>
-        </div>
+          )}
+        </Reveal>
       </div>
     </section>
   );
 }
 
 function Field({
-  label, value, onChange, error, placeholder, type = "text",
+  label,
+  value,
+  onChange,
+  error,
+  type = "text",
 }: {
   label: string;
   value: string;
-  onChange: (v: string) => void;
+  onChange: (value: string) => void;
   error?: string;
-  placeholder?: string;
   type?: string;
 }) {
   return (
-    <div>
-      <label className="block text-[12px] font-semibold mb-2" style={{ color: "var(--bd-muted)" }}>
+    <label className="block">
+      <span className="mono block" style={{ color: "var(--ink-faint)" }}>
         {label}
-      </label>
+      </span>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="w-full px-4 py-3 rounded-lg text-[13px] outline-none transition-colors duration-150"
+        className="mt-2 w-full px-4 py-3 text-[0.92rem] outline-none"
         style={{
-          background: "var(--bd-elevated)",
-          border: `1px solid ${error ? "#f87171" : "var(--bd-border-strong)"}`,
-          color: "#fff",
+          background: "var(--paper)",
+          border: `1px solid ${error ? "var(--signal)" : "var(--line-strong)"}`,
+          color: "var(--ink)",
         }}
-        onFocus={(e) =>
-          (e.currentTarget.style.borderColor = error ? "#f87171" : "var(--bd-blue-border)")
-        }
-        onBlur={(e) =>
-          (e.currentTarget.style.borderColor = error ? "#f87171" : "var(--bd-border-strong)")
-        }
       />
       {error && (
-        <p className="text-[11px] mt-1" style={{ color: "#f87171" }}>{error}</p>
+        <span className="mono mt-1.5 block" style={{ color: "var(--signal)" }}>
+          {error}
+        </span>
       )}
-    </div>
+    </label>
   );
 }

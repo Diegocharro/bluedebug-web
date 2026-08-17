@@ -1,0 +1,46 @@
+# Bluedebug
+
+> Ingeniería de procesos y automatización para empresas. Auditamos el trabajo
+> manual que hace un equipo, lo medimos en horas y construimos el sistema que
+> lo sustituye.
+
+## Qué hacemos
+
+- **Automatización de tareas repetitivas** — procesos que hoy alguien repite cada
+  semana siguiendo siempre los mismos pasos: facturas, altas de cliente,
+  informes, avisos.
+- **Integración entre sistemas** — ERP, CRM, hojas de cálculo y correo dejan de
+  ser islas. APIs, webhooks y migraciones.
+- **Paneles y datos** — cuadros de mando con los números que se usan para
+  decidir, no informes de hace un mes.
+- **Aplicaciones a medida** — móvil y web, en producción y con mantenimiento.
+  React Native y Next.js.
+
+## Método
+
+1. Diagnóstico — observar y cronometrar el proceso real, sobre el terreno.
+2. Números — horas por proceso, coste anual y presupuesto cerrado del
+   desarrollo.
+3. Construcción — entregas continuas en el entorno real del cliente.
+4. Mantenimiento — soporte y ajustes, sin permanencia.
+
+La primera consultoría es gratuita; solo se presupuesta el desarrollo.
+
+## Trabajos publicados
+
+- **Club Voleibol Oviedo** — web del club en React y Vite, con datos de
+  competición actualizados de forma automática, formularios de contacto,
+  patrocinio e inscripción, y escaparate para patrocinadores.
+  clubvoleiboloviedo.com
+- **AlignMe** — gestión de rotaciones 6×6 de voleibol con códigos QR. Adoptada
+  por la Federación de Voleibol del Principado de Asturias (FVBPA) y la
+  Federació de Voleibol de les Illes Balears (FVBIB).
+- **VBStats** — estadísticas de voleibol en tiempo real por jugador y por set.
+- **CoKitchen** — inventario compartido de la cocina de casa: qué hay, qué
+  caduca y qué falta comprar.
+
+## Contacto
+
+- Email: hola@bluedebug.com
+- Primera consultoría gratuita y sin compromiso.
+- Ámbito: España.

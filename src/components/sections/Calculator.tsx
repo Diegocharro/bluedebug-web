@@ -1,237 +1,207 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { useMemo, useState } from "react";
+import AreaChart, { Area } from "@/components/charts/area-chart";
+import Grid from "@/components/charts/grid";
+import XAxis from "@/components/charts/x-axis";
+import Reveal from "@/components/Reveal";
+
+const BASE_YEAR = 2026;
+
+/** Lo que se recupera no es el 100%: revisar y supervisar sigue costando. */
+const RECOVERY_RATE = 0.75;
+
+function euros(value: number) {
+  return new Intl.NumberFormat("es-ES", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
 
 export default function Calculator() {
-  const [hours, setHours] = useState(10);
-  const [people, setPeople] = useState(3);
-  const [rate, setRate] = useState(20);
+  const [people, setPeople] = useState(4);
+  const [hours, setHours] = useState(6);
+  const [cost, setCost] = useState(22);
 
-  const weeklyCost = hours * people * rate;
-  const monthlyCost = weeklyCost * 4;
-  const yearlyCost = monthlyCost * 12;
-  const savedHoursMonth = hours * people * 4 * 0.7;
-  const savedMoneyMonth = Math.round(monthlyCost * 0.7);
+  const result = useMemo(() => {
+    const weekly = people * hours * RECOVERY_RATE;
+    const monthly = weekly * 4.33;
+    const yearlyHours = weekly * 46;
+    const yearlyCost = yearlyHours * cost;
+    const data = Array.from({ length: 12 }, (_, i) => ({
+      date: new Date(BASE_YEAR, i, 1),
+      horas: Math.round(monthly * (i + 1)),
+    }));
+    return { weekly, monthly, yearlyHours, yearlyCost, data };
+  }, [people, hours, cost]);
 
   return (
-    <section
-      className="py-16 lg:py-28 relative overflow-hidden"
-      id="calculator"
-      style={{ borderTop: "1px solid var(--bd-border)" }}
-    >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 50% 50% at 50% 100%, rgba(8,146,208,0.07) 0%, transparent 70%)",
-        }}
-      />
-
-      <div className="max-w-[1200px] mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 52 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.12 }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-[520px] mx-auto mb-10 lg:mb-16"
-        >
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-widest uppercase mb-5"
-            style={{
-              background: "var(--bd-blue-dim)",
-              border: "1px solid var(--bd-blue-border)",
-              color: "var(--bd-blue)",
-            }}
-          >
-            Calculadora de ahorro
-          </div>
-          <h2 className="text-4xl font-black tracking-[-0.025em] leading-[1.1] mb-4">
-            ¿Cuánto te cuesta{" "}
-            <span className="text-gradient-blue">no automatizar?</span>
+    <section id="calculadora" className="py-20 lg:py-28" style={{ borderTop: "1px solid var(--line)" }}>
+      <div className="mx-auto w-[min(1180px,92vw)]">
+        <Reveal>
+          <span className="mono" style={{ color: "var(--blue)" }}>
+            04 — calculadora
+          </span>
+        </Reveal>
+        <Reveal delay={0.05}>
+          <h2 className="font-display mt-5 max-w-[20ch] text-[clamp(2rem,4vw,3.1rem)] font-extrabold leading-[1.06] tracking-[-0.038em]">
+            Pon tus números y mira cuánto cuesta el trabajo manual
           </h2>
-          <p className="text-[15px] leading-relaxed" style={{ color: "var(--bd-muted)" }}>
-            Ajusta los valores de tu empresa y descubre el coste real de los
-            procesos manuales.
-          </p>
-        </motion.div>
+        </Reveal>
 
-        <motion.div
-          initial={{ opacity: 0, y: 52 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.12 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="max-w-[860px] mx-auto rounded-2xl overflow-hidden"
-          style={{
-            background: "var(--bd-card)",
-            border: "1px solid var(--bd-border-strong)",
-          }}
-        >
-          <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x"
-            style={{ borderColor: "var(--bd-border)" }}>
-            {/* Inputs */}
-            <div className="p-8">
-              <h3 className="text-[15px] font-bold mb-8 tracking-tight">
-                Tu situación actual
-              </h3>
-
-              <div className="space-y-8">
-                <SliderField
-                  label="Horas semanales en tareas manuales"
-                  value={hours}
-                  onChange={setHours}
-                  min={1} max={40} step={1}
-                  suffix="h/semana"
-                />
-                <SliderField
-                  label="Personas involucradas"
-                  value={people}
-                  onChange={setPeople}
-                  min={1} max={20} step={1}
-                  suffix="personas"
-                />
-                <SliderField
-                  label="Coste/hora estimado"
-                  value={rate}
-                  onChange={setRate}
-                  min={10} max={60} step={5}
-                  suffix="€/hora"
-                />
-              </div>
-            </div>
-
-            {/* Results */}
-            <div
-              className="p-8 flex flex-col justify-between"
-              style={{ background: "rgba(8,146,208,0.03)" }}
-            >
-              <div>
-                <h3 className="text-[15px] font-bold mb-2 tracking-tight">
-                  Tu potencial de ahorro
-                </h3>
-                <p className="text-[12px] mb-8" style={{ color: "var(--bd-muted)" }}>
-                  Estimando un 70% de automatización
-                </p>
-
-                <div className="space-y-4 mb-8">
-                  <ResultRow
-                    label="Horas liberadas/mes"
-                    value={`${Math.round(savedHoursMonth)}h`}
-                    accent
-                  />
-                  <ResultRow
-                    label="Ahorro mensual estimado"
-                    value={`${savedMoneyMonth.toLocaleString("es-ES")}€`}
-                    accent
-                  />
-                  <ResultRow
-                    label="Ahorro anual estimado"
-                    value={`${Math.round(yearlyCost * 0.7).toLocaleString("es-ES")}€`}
-                    highlight
-                  />
-                  <ResultRow
-                    label="Coste actual anual (sin automatizar)"
-                    value={`${yearlyCost.toLocaleString("es-ES")}€`}
-                    muted
-                  />
-                </div>
-              </div>
-
-              <a
-                href="#contact"
-                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-lg text-[14px] font-semibold text-white transition-all duration-200"
-                style={{ background: "var(--bd-blue)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "#0780bc")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "var(--bd-blue)")}
-              >
-                Quiero ahorrar {savedMoneyMonth.toLocaleString("es-ES")}€/mes
-                <ArrowRight size={14} />
-              </a>
-            </div>
+        <div className="mt-14 grid gap-px lg:grid-cols-[0.85fr_1.15fr]" style={{ background: "var(--line)" }}>
+          {/* Controles */}
+          <div className="flex flex-col gap-9 p-8" style={{ background: "var(--surface)" }}>
+            <Field
+              label="Personas haciendo tareas repetitivas"
+              value={people}
+              min={1}
+              max={40}
+              onChange={setPeople}
+              suffix={people === 1 ? "persona" : "personas"}
+            />
+            <Field
+              label="Horas a la semana, cada una"
+              value={hours}
+              min={1}
+              max={30}
+              onChange={setHours}
+              suffix="h / semana"
+            />
+            <Field
+              label="Coste por hora de esa persona"
+              value={cost}
+              min={10}
+              max={90}
+              onChange={setCost}
+              suffix="€ / hora"
+            />
+            <p className="mono leading-[1.9]" style={{ color: "var(--ink-faint)" }}>
+              Calculado sobre el 75% del tiempo: revisar y supervisar sigue
+              costando algo. 46 semanas laborables al año.
+            </p>
           </div>
-        </motion.div>
+
+          {/* Resultado */}
+          <div className="p-8" style={{ background: "var(--surface)" }}>
+            <div className="grid grid-cols-2 gap-px" style={{ background: "var(--line)" }}>
+              <Metric
+                value={`${Math.round(result.monthly)}h`}
+                label="recuperadas al mes"
+                accent="var(--blue)"
+              />
+              <Metric
+                value={euros(result.yearlyCost)}
+                label="que te cuesta al año"
+                accent="var(--signal)"
+              />
+            </div>
+
+            <div className="mono mt-8 mb-2 flex items-baseline justify-between" style={{ color: "var(--ink-faint)" }}>
+              <span>horas acumuladas · primer año</span>
+              <span style={{ color: "var(--blue)" }}>
+                {Math.round(result.yearlyHours)}h
+              </span>
+            </div>
+
+            <AreaChart
+              data={result.data}
+              xDataKey="date"
+              aspectRatio="16 / 7"
+              margin={{ top: 16, right: 8, bottom: 28, left: 34 }}
+              revealSignature={`${people}-${hours}-${cost}`}
+            >
+              <Grid />
+              <XAxis numTicks={4} />
+              <Area
+                dataKey="horas"
+                stroke="var(--blue)"
+                fill="var(--blue)"
+                fillOpacity={0.16}
+                strokeWidth={2.2}
+              />
+            </AreaChart>
+
+            <a
+              href="#contacto"
+              className="mt-6 inline-flex text-[0.88rem] font-semibold text-white transition-all duration-150"
+              style={{ background: "var(--blue)", padding: "14px 24px" }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "var(--ink)")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "var(--blue)")}
+            >
+              Quiero el informe con mis números reales ⟶
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
 
-function SliderField({
-  label, value, onChange, min, max, step, suffix,
+function Field({
+  label,
+  value,
+  min,
+  max,
+  suffix,
+  onChange,
 }: {
   label: string;
   value: number;
-  onChange: (v: number) => void;
-  min: number; max: number; step: number;
+  min: number;
+  max: number;
   suffix: string;
+  onChange: (value: number) => void;
 }) {
   return (
     <div>
-      <div className="flex items-center justify-between mb-3">
-        <label className="text-[13px] font-medium" style={{ color: "var(--bd-muted)" }}>
-          {label}
-        </label>
-        <span className="text-[14px] font-bold text-white">
-          {value} {suffix}
-        </span>
+      <div className="text-[0.92rem] font-medium" style={{ color: "var(--ink-soft)" }}>
+        {label}
       </div>
-      <input
-        type="range"
-        min={min} max={max} step={step}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
-        style={{
-          background: `linear-gradient(90deg, var(--bd-blue) ${((value - min) / (max - min)) * 100}%, rgba(255,255,255,0.1) ${((value - min) / (max - min)) * 100}%)`,
-          accentColor: "var(--bd-blue)",
-        }}
-      />
-      <div className="flex justify-between mt-1.5">
-        <span className="text-[10px]" style={{ color: "var(--bd-subtle)" }}>{min}</span>
-        <span className="text-[10px]" style={{ color: "var(--bd-subtle)" }}>{max}</span>
+      <div className="mt-3 flex items-center gap-5">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value))}
+          className="min-w-0 flex-1 accent-[var(--blue)]"
+          aria-label={label}
+        />
+        <div className="shrink-0 text-right">
+          <span className="font-display text-[1.5rem] font-extrabold leading-none tracking-[-0.04em]">
+            {value}
+          </span>
+          <span className="mono ml-1.5" style={{ color: "var(--ink-faint)" }}>
+            {suffix}
+          </span>
+        </div>
       </div>
     </div>
   );
 }
 
-function ResultRow({
-  label, value, accent, muted, highlight,
+function Metric({
+  value,
+  label,
+  accent,
 }: {
-  label: string; value: string; accent?: boolean; muted?: boolean; highlight?: boolean;
+  value: string;
+  label: string;
+  accent: string;
 }) {
-  if (highlight) {
-    return (
-      <div
-        className="flex items-center justify-between px-4 py-3 rounded-xl"
-        style={{
-          background: "rgba(8,146,208,0.08)",
-          border: "1px solid rgba(8,146,208,0.2)",
-        }}
-      >
-        <span className="text-[13px] font-semibold text-white">{label}</span>
-        <span className="text-[20px] font-black tracking-tight text-gradient-blue">
-          {value}
-        </span>
-      </div>
-    );
-  }
   return (
-    <div className="flex items-center justify-between py-3 border-b" style={{ borderColor: "var(--bd-border)" }}>
-      <span className="text-[13px]" style={{ color: "var(--bd-muted)" }}>
-        {label}
-      </span>
-      <span
-        className="text-[15px] font-black tracking-tight"
-        style={{
-          color: accent
-            ? "var(--bd-blue)"
-            : muted
-            ? "rgba(255,255,255,0.3)"
-            : "#fff",
-        }}
+    <div className="p-6" style={{ background: "var(--surface)" }}>
+      <div
+        className="font-display text-[clamp(1.7rem,3vw,2.4rem)] font-extrabold leading-none tracking-[-0.045em]"
+        style={{ color: accent }}
       >
         {value}
-      </span>
+      </div>
+      <div className="mono mt-3" style={{ color: "var(--ink-faint)" }}>
+        {label}
+      </div>
     </div>
   );
 }

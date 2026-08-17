@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>BlueDebug — lockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bd-blue:#0892D0; --bd-bg:#080808; --bd-muted:rgba(255,255,255,.45); --bd-border:rgba(255,255,255,.07); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bd-bg); color:#fff; font-family:Inter,system-ui,sans-serif; padding:48px; }
+  h1 { font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+       color:var(--bd-muted); margin:0 0 20px; }
+  section { margin-bottom:52px; }
+  .box { border:1px solid var(--bd-border); border-radius:14px; background:#0c0c0c; padding:40px; }
+  .row { display:flex; align-items:center; gap:56px; flex-wrap:wrap; }
+  .label { font-size:11px; color:var(--bd-muted); letter-spacing:.05em; margin-top:14px; }
+  .light { background:#fff; }
+  .light .label { color:rgba(0,0,0,.45); }
+  .warn { font-size:12px; color:#e0a03a; margin-top:14px; }
+  figure { margin:0; }
+</style>
+</head>
+<body>
+
+<section>
+  <h1>1 · Vertical — nombre debajo</h1>
+  <div class="box">
+    <div class="row">
+      <figure><img src="/logo-bd/lockup-vertical.svg" width="186" height="170" alt="BlueDebug">
+        <div class="label">100% (186×170)</div></figure>
+      <figure><img src="/logo-bd/lockup-vertical.svg" width="130" alt="BlueDebug">
+        <div class="label">70%</div></figure>
+      <figure><img src="/logo-bd/lockup-vertical.svg" width="93" alt="BlueDebug">
+        <div class="label">50%</div></figure>
+      <figure><img src="/logo-bd/lockup-vertical.svg" width="372" alt="BlueDebug">
+        <div class="label">200% — el SVG no pixela</div></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h1>2 · Horizontal — nombre a la derecha</h1>
+  <div class="box">
+    <div class="row">
+      <figure><img src="/logo-bd/lockup-horizontal.svg" width="211" height="56" alt="BlueDebug">
+        <div class="label">100% (211×56)</div></figure>
+      <figure><img src="/logo-bd/lockup-horizontal.svg" width="150" alt="BlueDebug">
+        <div class="label">71%</div></figure>
+      <figure><img src="/logo-bd/lockup-horizontal.svg" width="113" alt="BlueDebug">
+        <div class="label">54% — tamaño de navbar</div></figure>
+      <figure><img src="/logo-bd/lockup-horizontal.svg" width="422" alt="BlueDebug">
+        <div class="label">200%</div></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h1>3 · El bicho solo, contra el actual</h1>
+  <div class="box">
+    <div class="row">
+      <figure><img src="/logo-bd/logo-bd-final.png" width="120" alt="">
+        <div class="label">nuevo · 120px</div></figure>
+      <figure><img src="/logo.png" width="120" alt="">
+        <div class="label">actual · 120px</div></figure>
+      <figure><img src="/logo-bd/logo-bd-final.png" width="30" alt="">
+        <div class="label">nuevo · 30px</div></figure>
+      <figure><img src="/logo.png" width="30" alt="">
+        <div class="label">actual · 30px</div></figure>
+      <figure><img src="/logo-bd/logo-bd-final.png" width="16" alt="">
+        <div class="label">nuevo · 16px (favicon)</div></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h1>4 · Sobre fondo claro</h1>
+  <div class="box light">
+    <div class="row">
+      <figure><img src="/logo-bd/lockup-horizontal.svg" width="211" height="56" alt="BlueDebug">
+        <div class="label">horizontal</div></figure>
+      <figure><img src="/logo-bd/lockup-vertical.svg" width="186" height="170" alt="BlueDebug">
+        <div class="label">vertical</div></figure>
+    </div>
+    <div class="warn">⚠ «Debug» va en blanco, así que sobre fondo claro desaparece. Si lo necesitas para papel o
+      fondo blanco hay que sacar una segunda versión con «Debug» en gris oscuro.</div>
+  </div>
+</section>
+
+</body>
+</html>

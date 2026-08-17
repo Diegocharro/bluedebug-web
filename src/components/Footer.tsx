@@ -1,129 +1,90 @@
-"use client";
-
 import Image from "next/image";
+import Link from "next/link";
+import { site } from "@/lib/site-config";
+import { apps } from "@/data/apps";
 
 export default function Footer() {
   return (
-    <footer
-      className="py-12 mt-auto"
-      style={{ borderTop: "1px solid var(--bd-border)" }}
-    >
-      <div className="max-w-[1200px] mx-auto px-6">
-        <div className="grid md:grid-cols-3 gap-8 mb-10">
-          {/* Brand */}
+    <footer style={{ borderTop: "1px solid var(--line-strong)" }}>
+      <div className="mx-auto w-[min(1180px,92vw)] py-14">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <div className="flex items-center gap-2.5 mb-3">
+            <div className="flex items-center gap-2.5">
               <Image
-                src="/logo.png"
-                alt="Bluedebug"
-                width={26}
-                height={26}
-                className="object-contain"
+                src="/logo-bd/logo-bd-256.png"
+                alt=""
+                width={32}
+                height={32}
+                className="h-8 w-8 object-contain"
               />
-              <span className="text-[15px] font-bold tracking-tight text-white">
+              <span className="font-display text-[20px] font-extrabold tracking-[-0.04em]">
                 Bluedebug
               </span>
             </div>
-            <p className="text-[13px] leading-relaxed max-w-[220px]" style={{ color: "var(--bd-muted)" }}>
-              Automatización y transformación digital para pymes y startups.
+            <p
+              className="mt-3 max-w-[26rem] text-[13.5px] leading-relaxed"
+              style={{ color: "var(--ink-soft)" }}
+            >
+              {site.claim}
             </p>
+            <a
+              href={`mailto:${site.email}`}
+              className="mono mt-5 inline-block"
+              style={{ color: "var(--blue)" }}
+            >
+              {site.email}
+            </a>
           </div>
 
-          {/* Links */}
           <div>
-            <div
-              className="text-[11px] font-semibold uppercase tracking-widest mb-4"
-              style={{ color: "var(--bd-subtle)" }}
-            >
-              Navegación
+            <div className="mono mb-4" style={{ color: "var(--ink-faint)" }}>
+              Secciones
             </div>
-            <div className="space-y-2.5">
-              {[
-                { label: "Servicios", href: "#solution" },
-                { label: "Cómo funciona", href: "#how-it-works" },
-                { label: "Portfolio", href: "#portfolio" },
-                { label: "FAQ", href: "#faq" },
-                { label: "Agendar llamada", href: "#contact" },
-              ].map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="block text-[13px] transition-colors duration-150"
-                  style={{ color: "var(--bd-muted)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = "var(--bd-muted)")
-                  }
-                >
-                  {link.label}
-                </a>
+            <ul className="flex flex-col gap-2.5">
+              {site.nav.map((item) => (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    className="text-[13.5px]"
+                    style={{ color: "var(--ink-soft)" }}
+                  >
+                    {item.label}
+                  </a>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
 
-          {/* Contact */}
           <div>
-            <div
-              className="text-[11px] font-semibold uppercase tracking-widest mb-4"
-              style={{ color: "var(--bd-subtle)" }}
-            >
-              Contacto
+            <div className="mono mb-4" style={{ color: "var(--ink-faint)" }}>
+              Trabajos
             </div>
-            <div className="space-y-2.5">
-              <a
-                href="mailto:bluedebug.contact@gmail.com"
-                className="block text-[13px] transition-colors duration-150"
-                style={{ color: "var(--bd-muted)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--bd-blue)")}
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "var(--bd-muted)")
-                }
-              >
-                bluedebug.contact@gmail.com
-              </a>
-              <a
-                href="https://bluedebug.com"
-                className="block text-[13px] transition-colors duration-150"
-                style={{ color: "var(--bd-muted)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--bd-blue)")}
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "var(--bd-muted)")
-                }
-              >
-                bluedebug.com
-              </a>
-            </div>
+            <ul className="flex flex-col gap-2.5">
+              {apps.map((app) => (
+                <li key={app.slug}>
+                  <Link
+                    href={`/portfolio/${app.slug}`}
+                    className="text-[13.5px]"
+                    style={{ color: "var(--ink-soft)" }}
+                  >
+                    {app.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
         <div
-          className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8"
-          style={{ borderTop: "1px solid var(--bd-border)" }}
+          className="mono mt-12 flex flex-wrap items-center justify-between gap-3 pt-6"
+          style={{ borderTop: "1px solid var(--line)", color: "var(--ink-faint)" }}
         >
-          <span className="text-[12px]" style={{ color: "var(--bd-subtle)" }}>
-            © {new Date().getFullYear()} Bluedebug. Todos los derechos reservados.
+          <span>
+            © {new Date().getFullYear()} Bluedebug — Automatización de procesos
           </span>
-          <div className="flex gap-6">
-            {["Política de privacidad", "Aviso legal", "Cookies"].map((item) => (
-              <a
-                key={item}
-                href="#"
-                className="text-[12px] transition-colors duration-150"
-                style={{ color: "var(--bd-subtle)" }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.color = "var(--bd-muted)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "var(--bd-subtle)")
-                }
-              >
-                {item}
-              </a>
-            ))}
-          </div>
+          <span>Hecho en España</span>
         </div>
       </div>
     </footer>
   );
 }
-

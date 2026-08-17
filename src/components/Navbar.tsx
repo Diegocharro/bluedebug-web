@@ -1,130 +1,114 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-
-const links = [
-  { label: "Servicios", href: "#solution" },
-  { label: "Cómo funciona", href: "#how-it-works" },
-  { label: "Portfolio", href: "#portfolio" },
-  { label: "FAQ", href: "#faq" },
-];
+import Link from "next/link";
+import { site } from "@/lib/site-config";
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [solid, setSolid] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handler, { passive: true });
-    return () => window.removeEventListener("scroll", handler);
+    const onScroll = () => setSolid(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      className="fixed top-0 inset-x-0 z-50 transition-colors duration-200"
       style={{
-        background: scrolled ? "rgba(8,8,8,0.85)" : "transparent",
-        backdropFilter: scrolled ? "blur(16px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none",
+        background: solid ? "rgba(245,247,249,0.94)" : "transparent",
+        borderBottom: `1px solid ${solid ? "var(--line)" : "transparent"}`,
       }}
     >
-      <nav className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <a href="#" className="flex items-center gap-2.5 group">
+      <div className="mx-auto flex h-[68px] w-[min(1180px,92vw)] items-center justify-between">
+        <Link href="/" className="flex items-center gap-2.5" aria-label="Bluedebug — inicio">
           <Image
-            src="/logo.png"
-            alt="Bluedebug"
-            width={30}
-            height={30}
-            className="object-contain"
+            src="/logo-bd/logo-bd-256.png"
+            alt=""
+            width={34}
+            height={34}
             priority
+            className="h-[30px] w-[30px] object-contain"
           />
-          <span className="text-[15px] font-bold tracking-tight text-white">
+          <span
+            className="font-display text-[19px] font-extrabold tracking-[-0.04em]"
+            style={{ color: "var(--ink)" }}
+          >
             Bluedebug
           </span>
-        </a>
+        </Link>
 
-        {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-8">
-          {links.map((link) => (
+        <nav className="hidden items-center gap-8 md:flex">
+          {site.nav.map((item) => (
             <a
-              key={link.href}
-              href={link.href}
-              className="text-[13px] font-medium transition-colors duration-200"
-              style={{ color: "var(--bd-muted)" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--bd-muted)")}
+              key={item.href}
+              href={item.href}
+              className="text-[13.5px] font-medium transition-colors"
+              style={{ color: "var(--ink-soft)" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "var(--blue)")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--ink-soft)")}
             >
-              {link.label}
+              {item.label}
             </a>
           ))}
-        </div>
+        </nav>
 
-        {/* CTA */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="flex items-center gap-3">
           <a
-            href="#contact"
-            className="text-[13px] font-semibold text-white px-4 py-2 rounded-lg transition-all duration-200"
-            style={{ background: "var(--bd-blue)" }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#0780bc")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "var(--bd-blue)")}
+            href="#contacto"
+            className="hidden text-[13px] font-semibold text-white transition-transform duration-150 sm:inline-flex"
+            style={{ background: "var(--blue)", padding: "11px 20px" }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "var(--ink)")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "var(--blue)")}
           >
             Agendar llamada
           </a>
-        </div>
-
-        {/* Mobile menu toggle */}
-        <button
-          className="md:hidden text-white p-1"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
-        >
-          {menuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-      </nav>
-
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden border-t"
-            style={{
-              background: "rgba(10,10,10,0.97)",
-              backdropFilter: "blur(20px)",
-              borderColor: "var(--bd-border)",
-            }}
+          <button
+            type="button"
+            aria-label="Menú"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="flex h-9 w-9 flex-col items-center justify-center gap-[5px] md:hidden"
+            style={{ border: "1px solid var(--line-strong)" }}
           >
-            <div className="px-6 py-4 flex flex-col gap-4">
-              {links.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="text-[14px] font-medium"
-                  style={{ color: "var(--bd-muted)" }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link.label}
-                </a>
-              ))}
+            <span className="block h-px w-4" style={{ background: "var(--ink)" }} />
+            <span className="block h-px w-4" style={{ background: "var(--ink)" }} />
+          </button>
+        </div>
+      </div>
+
+      {open && (
+        <div
+          className="md:hidden"
+          style={{ background: "var(--paper)", borderTop: "1px solid var(--line)" }}
+        >
+          <nav className="mx-auto flex w-[min(1180px,92vw)] flex-col py-3">
+            {site.nav.map((item) => (
               <a
-                href="#contact"
-                className="text-[13px] font-semibold text-white px-4 py-2.5 rounded-lg text-center mt-2"
-                style={{ background: "var(--bd-blue)" }}
-                onClick={() => setMenuOpen(false)}
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="py-3 text-[14px] font-medium"
+                style={{ color: "var(--ink-soft)", borderBottom: "1px solid var(--line)" }}
               >
-                Agendar llamada
+                {item.label}
               </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            ))}
+            <a
+              href="#contacto"
+              onClick={() => setOpen(false)}
+              className="mt-4 mb-2 py-3 text-center text-[13px] font-semibold text-white"
+              style={{ background: "var(--blue)" }}
+            >
+              Agendar llamada
+            </a>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }

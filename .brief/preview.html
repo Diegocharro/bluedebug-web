@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bluedebug — 4 direcciones visuales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:Inter,system-ui,sans-serif;background:#0b0d10;color:#fff}
+  .chooser{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;gap:6px;justify-content:center;
+    padding:10px;background:rgba(10,12,16,.82);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.1);
+    font-size:12px;font-weight:600;letter-spacing:.02em}
+  .chooser a{color:rgba(255,255,255,.62);text-decoration:none;padding:7px 13px;border-radius:99px;border:1px solid rgba(255,255,255,.12);transition:.18s}
+  .chooser a:hover{color:#fff;border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.07)}
+  .label{position:absolute;top:64px;left:50%;transform:translateX(-50%);z-index:20;
+    font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+    padding:7px 16px;border-radius:99px;white-space:nowrap}
+  .pick{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:20;cursor:pointer;
+    font:600 12px/1 Inter,sans-serif;letter-spacing:.06em;padding:13px 26px;border-radius:99px;border:0;transition:.2s}
+  .pick:hover{transform:translateX(-50%) translateY(-2px)}
+  section{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;padding:120px 0 90px}
+  .wrap{width:min(1140px,90vw);margin:0 auto;position:relative;z-index:5}
+  .fade{opacity:0;transform:translateY(26px);animation:fade .9s cubic-bezier(.22,1,.36,1) forwards}
+  @keyframes fade{to{opacity:1;transform:none}}
+  .d1{animation-delay:.08s}.d2{animation-delay:.18s}.d3{animation-delay:.28s}.d4{animation-delay:.38s}.d5{animation-delay:.5s}
+
+  /* ══ A · AURORA GLASS ══ */
+  #a{background:#FBFCFE;color:#0B1B2B;font-family:Outfit,Inter,sans-serif}
+  #a .aur{position:absolute;border-radius:50%;filter:blur(90px);opacity:.62}
+  #a .a1{width:640px;height:640px;background:#38BDF8;top:-190px;left:-130px;animation:fl1 22s ease-in-out infinite}
+  #a .a2{width:560px;height:560px;background:#818CF8;top:110px;right:-150px;animation:fl2 27s ease-in-out infinite}
+  #a .a3{width:480px;height:480px;background:#5EEAD4;bottom:-190px;left:38%;animation:fl3 31s ease-in-out infinite}
+  @keyframes fl1{50%{transform:translate(120px,90px) scale(1.14)}}
+  @keyframes fl2{50%{transform:translate(-110px,70px) scale(.9)}}
+  @keyframes fl3{50%{transform:translate(90px,-90px) scale(1.1)}}
+  #a .noise{position:absolute;inset:0;opacity:.5;
+    background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(255,255,255,.85),rgba(255,255,255,.35))}
+  #a h1{font-size:clamp(2.6rem,5.6vw,4.5rem);font-weight:800;letter-spacing:-.045em;line-height:1.02}
+  #a .grad{background:linear-gradient(100deg,#0EA5E9,#6366F1 55%,#14B8A6);-webkit-background-clip:text;background-clip:text;color:transparent}
+  #a p{font-size:1.12rem;line-height:1.65;color:#4A6076;max-width:30rem;margin:1.6rem 0 2.4rem;font-weight:300}
+  #a .badge{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    padding:8px 15px;border-radius:99px;background:rgba(255,255,255,.7);border:1px solid rgba(14,165,233,.28);
+    color:#0284C7;backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(14,165,233,.1)}
+  #a .cta{display:inline-flex;align-items:center;gap:9px;font-size:.94rem;font-weight:600;padding:15px 28px;border-radius:99px;
+    background:linear-gradient(100deg,#0EA5E9,#6366F1);color:#fff;text-decoration:none;
+    box-shadow:0 12px 34px rgba(56,132,255,.34);transition:.25s}
+  #a .cta:hover{transform:translateY(-2px);box-shadow:0 18px 44px rgba(56,132,255,.42)}
+  #a .glass{background:rgba(255,255,255,.62);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.9);
+    border-radius:22px;box-shadow:0 24px 60px rgba(11,27,43,.09)}
+  #a .float{animation:bob 6s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(-13px)}}
+  #a .bar{height:7px;border-radius:99px;background:rgba(14,165,233,.13);overflow:hidden}
+  #a .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#0EA5E9,#6366F1);animation:grow 1.5s cubic-bezier(.22,1,.36,1) forwards;width:0}
+  @keyframes grow{to{width:var(--w)}}
+
+  /* ══ B · BLUEPRINT GRID ══ */
+  #b{background:#F4F7FA;color:#0E1D2B;font-family:Inter,sans-serif}
+  #b .grid{position:absolute;inset:0;
+    background-image:linear-gradient(rgba(11,110,180,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(11,110,180,.09) 1px,transparent 1px);
+    background-size:56px 56px;mask-image:radial-gradient(ellipse 90% 80% at 50% 40%,#000 40%,transparent 100%)}
+  #b .scan{position:absolute;left:0;right:0;height:180px;pointer-events:none;
+    background:linear-gradient(180deg,transparent,rgba(8,146,208,.13),transparent);animation:scan 7s linear infinite}
+  @keyframes scan{0%{top:-180px}100%{top:100%}}
+  #b .mono{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#0B6EB4}
+  #b h1{font-size:clamp(2.5rem,5.3vw,4.2rem);font-weight:700;letter-spacing:-.035em;line-height:1.06}
+  #b h1 em{font-style:normal;color:#0B6EB4;position:relative}
+  #b h1 em::after{content:"";position:absolute;left:0;right:0;bottom:.09em;height:.09em;background:#0B6EB4;
+    transform:scaleX(0);transform-origin:left;animation:ul 1s .7s cubic-bezier(.22,1,.36,1) forwards}
+  @keyframes ul{to{transform:scaleX(1)}}
+  #b p{font-size:1.05rem;line-height:1.7;color:#4C637A;max-width:29rem;margin:1.5rem 0 2.3rem}
+  #b .cta{display:inline-flex;align-items:center;gap:9px;font-size:.9rem;font-weight:600;padding:14px 26px;
+    background:#0B6EB4;color:#fff;text-decoration:none;border-radius:3px;transition:.2s;box-shadow:4px 4px 0 rgba(11,110,180,.2)}
+  #b .cta:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(11,110,180,.28)}
+  #b .card{background:#fff;border:1px solid rgba(11,110,180,.18);border-radius:4px;box-shadow:0 2px 0 rgba(11,110,180,.07)}
+  #b .node{width:46px;height:46px;display:grid;place-items:center;border:1px solid rgba(11,110,180,.35);
+    border-radius:4px;background:rgba(11,110,180,.06);font-size:16px}
+  #b .wire{flex:1;height:1px;background:repeating-linear-gradient(90deg,#0B6EB4 0 5px,transparent 5px 10px);position:relative}
+  #b .wire::after{content:"";position:absolute;top:-2px;width:5px;height:5px;border-radius:50%;background:#0B6EB4;animation:run 2.4s linear infinite}
+  @keyframes run{0%{left:0;opacity:0}15%{opacity:1}85%{opacity:1}100%{left:100%;opacity:0}}
+  #b .blink{animation:bl 1.1s steps(2) infinite}
+  @keyframes bl{50%{opacity:0}}
+
+  /* ══ C · SWISS NEON ══ */
+  #c{background:#fff;color:#000;font-family:Inter,sans-serif}
+  #c .rule{position:absolute;left:0;right:0;height:1px;background:rgba(0,0,0,.1)}
+  #c .vrule{position:absolute;top:0;bottom:0;width:1px;background:rgba(0,0,0,.07)}
+  #c h1{font-size:clamp(2.9rem,7.4vw,6.2rem);font-weight:800;letter-spacing:-.055em;line-height:.94;text-transform:uppercase}
+  #c .word{display:inline-block;opacity:0;transform:translateY(100%);animation:up .8s cubic-bezier(.22,1,.36,1) forwards}
+  #c .ov{overflow:hidden;display:inline-block;vertical-align:bottom}
+  @keyframes up{to{opacity:1;transform:none}}
+  #c .blue{color:#0038FF}
+  #c p{font-size:1.02rem;line-height:1.6;color:#5A5A5A;max-width:27rem;margin:1.7rem 0 2.2rem}
+  #c .cta{display:inline-flex;align-items:center;gap:10px;font-size:.86rem;font-weight:600;letter-spacing:.02em;
+    padding:15px 30px;background:#0038FF;color:#fff;text-decoration:none;border-radius:0;transition:.2s}
+  #c .cta:hover{background:#000}
+  #c .meta{font-size:10.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#9A9A9A}
+  #c .num{font-size:clamp(2rem,3.6vw,3rem);font-weight:800;letter-spacing:-.04em}
+  #c .swipe{position:relative;overflow:hidden}
+  #c .swipe::after{content:"";position:absolute;inset:0;background:#0038FF;transform-origin:right;
+    animation:swipe 1s .35s cubic-bezier(.76,0,.24,1) forwards}
+  @keyframes swipe{to{transform:scaleX(0)}}
+
+  /* ══ D · SOFT MACHINE ══ */
+  #d{background:#EDF1F7;color:#1B2430;font-family:'Space Grotesk',Inter,sans-serif}
+  #d .halo{position:absolute;border-radius:50%;border:1px solid rgba(93,124,255,.16);
+    top:50%;left:50%;translate:-50% -50%;animation:spin 40s linear infinite}
+  @keyframes spin{to{rotate:360deg}}
+  #d .orb{position:absolute;width:11px;height:11px;border-radius:50%;background:linear-gradient(140deg,#5D7CFF,#22D3EE);
+    box-shadow:0 0 18px rgba(93,124,255,.6)}
+  #d h1{font-size:clamp(2.5rem,5.4vw,4.3rem);font-weight:700;letter-spacing:-.04em;line-height:1.05}
+  #d .chip{background:linear-gradient(120deg,#5D7CFF,#22D3EE);-webkit-background-clip:text;background-clip:text;color:transparent}
+  #d p{font-size:1.06rem;line-height:1.68;color:#5A6A7D;max-width:29rem;margin:1.5rem 0 2.3rem}
+  #d .soft{background:#EDF1F7;border-radius:22px;box-shadow:9px 9px 22px rgba(163,177,198,.55),-9px -9px 22px rgba(255,255,255,.92)}
+  #d .inset{background:#EDF1F7;border-radius:14px;box-shadow:inset 4px 4px 9px rgba(163,177,198,.5),inset -4px -4px 9px rgba(255,255,255,.9)}
+  #d .cta{display:inline-flex;align-items:center;gap:9px;font-size:.94rem;font-weight:600;padding:16px 30px;border-radius:99px;
+    background:linear-gradient(120deg,#5D7CFF,#22D3EE);color:#fff;text-decoration:none;
+    box-shadow:0 12px 30px rgba(93,124,255,.35);transition:.25s}
+  #d .cta:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(93,124,255,.45)}
+  #d .pulse{animation:pu 2.6s ease-in-out infinite}
+  @keyframes pu{50%{transform:scale(1.06);opacity:.85}}
+
+  .row{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+  @media(max-width:900px){.row{grid-template-columns:1fr;gap:44px}.side{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="chooser">
+  <a href="#a">A · Aurora Glass</a>
+  <a href="#b">B · Blueprint Grid</a>
+  <a href="#c">C · Swiss Neon</a>
+  <a href="#d">D · Soft Machine</a>
+</nav>
+
+<!-- ════ A · AURORA GLASS ════ -->
+<section id="a">
+  <div class="aur a1"></div><div class="aur a2"></div><div class="aur a3"></div>
+  <div class="noise"></div>
+  <div class="label" style="background:rgba(255,255,255,.75);border:1px solid rgba(14,165,233,.3);color:#0284C7">A · Aurora Glass</div>
+  <div class="wrap row">
+    <div>
+      <div class="badge fade d1">◆ Automatización empresarial</div>
+      <h1 class="fade d2" style="margin-top:26px">Automatiza tu empresa<br><span class="grad">y recupera 40 horas</span><br>al mes</h1>
+      <p class="fade d3">Eliminamos las tareas manuales que frenan tu crecimiento y conectamos tus sistemas para que el trabajo se haga solo.</p>
+      <div class="fade d4"><a class="cta" href="#a">Agendar llamada gratuita →</a></div>
+    </div>
+    <div class="side fade d5" style="position:relative;height:420px">
+      <div class="glass float" style="position:absolute;top:0;right:0;width:300px;padding:24px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <span style="font-size:12px;color:#68809A">Horas ahorradas</span>
+          <span style="font-size:11px;font-weight:700;color:#0EA5E9;background:rgba(14,165,233,.11);padding:3px 9px;border-radius:99px">+47%</span>
+        </div>
+        <div style="font-size:2.6rem;font-weight:800;letter-spacing:-.04em;margin-bottom:18px" class="grad">40h</div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <div class="bar"><i style="--w:78%"></i></div>
+          <div class="bar"><i style="--w:52%;animation-delay:.15s"></i></div>
+          <div class="bar"><i style="--w:90%;animation-delay:.3s"></i></div>
+        </div>
+      </div>
+      <div class="glass float" style="position:absolute;bottom:20px;left:0;width:250px;padding:20px;animation-delay:1.5s">
+        <div style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#68809A;margin-bottom:13px">Flujo activo</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:38px;height:38px;border-radius:12px;background:rgba(14,165,233,.12);display:grid;place-items:center">📥</div>
+          <div style="flex:1;height:2px;background:linear-gradient(90deg,#0EA5E9,#6366F1)"></div>
+          <div style="width:38px;height:38px;border-radius:12px;background:rgba(99,102,241,.12);display:grid;place-items:center">⚙️</div>
+          <div style="flex:1;height:2px;background:linear-gradient(90deg,#6366F1,#14B8A6)"></div>
+          <div style="width:38px;height:38px;border-radius:12px;background:rgba(20,184,166,.12);display:grid;place-items:center">✅</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="pick" data-code="A" style="background:linear-gradient(100deg,#0EA5E9,#6366F1);color:#fff;box-shadow:0 10px 28px rgba(56,132,255,.32)">Elegir A · Aurora Glass</button>
+</section>
+
+<!-- ════ B · BLUEPRINT GRID ════ -->
+<section id="b">
+  <div class="grid"></div><div class="scan"></div>
+  <div class="label" style="background:#fff;border:1px solid rgba(11,110,180,.3);color:#0B6EB4">B · Blueprint Grid</div>
+  <div class="wrap row">
+    <div>
+      <div class="mono fade d1">[ SYS ] · Automatización de procesos<span class="blink">▮</span></div>
+      <h1 class="fade d2" style="margin-top:20px">Tus procesos,<br><em>depurados</em> y<br>automatizados</h1>
+      <p class="fade d3">Auditamos tu operativa, encontramos los cuellos de botella y los sustituimos por sistemas que trabajan sin supervisión.</p>
+      <div class="fade d4"><a class="cta" href="#b">Agendar llamada gratuita →</a></div>
+      <div class="mono fade d5" style="margin-top:34px;display:flex;gap:26px;color:#7C93AA">
+        <span>04 APPS EN PRODUCCIÓN</span><span>02 FEDERACIONES</span><span>100% ENTORNOS REALES</span>
+      </div>
+    </div>
+    <div class="side fade d5">
+      <div class="card" style="padding:22px">
+        <div class="mono" style="margin-bottom:18px">PIPELINE / RUNTIME</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px">
+          <div class="node">📥</div><div class="wire"></div>
+          <div class="node">⚙️</div><div class="wire"></div>
+          <div class="node">📊</div><div class="wire"></div>
+          <div class="node">✅</div>
+        </div>
+        <div style="border-top:1px dashed rgba(11,110,180,.25);padding-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+          <div><div style="font-size:1.7rem;font-weight:700;letter-spacing:-.03em">40h</div><div class="mono" style="color:#7C93AA">/ MES</div></div>
+          <div><div style="font-size:1.7rem;font-weight:700;letter-spacing:-.03em">3.2×</div><div class="mono" style="color:#7C93AA">ROI 90D</div></div>
+          <div><div style="font-size:1.7rem;font-weight:700;letter-spacing:-.03em">0</div><div class="mono" style="color:#7C93AA">ERRORES</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="pick" data-code="B" style="background:#0B6EB4;color:#fff">Elegir B · Blueprint Grid</button>
+</section>
+
+<!-- ════ C · SWISS NEON ════ -->
+<section id="c">
+  <div class="rule" style="top:96px"></div>
+  <div class="rule" style="bottom:96px"></div>
+  <div class="vrule" style="left:25%"></div><div class="vrule" style="left:50%"></div><div class="vrule" style="left:75%"></div>
+  <div class="label" style="background:#000;color:#fff">C · Swiss Neon</div>
+  <div class="wrap">
+    <div class="meta fade d1" style="margin-bottom:34px">Bluedebug — Automatización empresarial / ES · 2026</div>
+    <h1>
+      <span class="ov"><span class="word" style="animation-delay:.1s">Menos</span></span>
+      <span class="ov"><span class="word" style="animation-delay:.18s">tareas.</span></span><br>
+      <span class="ov"><span class="word blue" style="animation-delay:.26s">Más</span></span>
+      <span class="ov"><span class="word blue" style="animation-delay:.34s">empresa.</span></span>
+    </h1>
+    <div class="row" style="margin-top:46px;align-items:end">
+      <div>
+        <p class="fade d4">Diseñamos y construimos los sistemas que eliminan el trabajo manual de tu operativa. Sin humo. Sin dependencias eternas.</p>
+        <div class="fade d5"><a class="cta" href="#c">Agendar llamada gratuita →</a></div>
+      </div>
+      <div class="side fade d5" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid #000">
+        <div style="padding:22px 16px;border-right:1px solid rgba(0,0,0,.1)"><div class="num">40h</div><div class="meta" style="margin-top:6px">Ahorro / mes</div></div>
+        <div style="padding:22px 16px;border-right:1px solid rgba(0,0,0,.1)"><div class="num blue">3.2×</div><div class="meta" style="margin-top:6px">ROI 90 días</div></div>
+        <div style="padding:22px 16px"><div class="num">04</div><div class="meta" style="margin-top:6px">Apps live</div></div>
+      </div>
+    </div>
+  </div>
+  <button class="pick" data-code="C" style="background:#0038FF;color:#fff">Elegir C · Swiss Neon</button>
+</section>
+
+<!-- ════ D · SOFT MACHINE ════ -->
+<section id="d">
+  <div class="halo" style="width:620px;height:620px"></div>
+  <div class="halo" style="width:880px;height:880px;animation-duration:60s;animation-direction:reverse"></div>
+  <div class="halo" style="width:1160px;height:1160px;animation-duration:80s"></div>
+  <div class="orb pulse" style="top:24%;left:16%"></div>
+  <div class="orb pulse" style="top:70%;left:78%;animation-delay:.8s"></div>
+  <div class="orb pulse" style="top:38%;left:88%;animation-delay:1.5s"></div>
+  <div class="label" style="background:#EDF1F7;color:#5D7CFF;box-shadow:5px 5px 12px rgba(163,177,198,.5),-5px -5px 12px rgba(255,255,255,.9)">D · Soft Machine</div>
+  <div class="wrap row">
+    <div>
+      <div class="fade d1" style="display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#5D7CFF;padding:10px 18px;border-radius:99px;background:#EDF1F7;box-shadow:inset 3px 3px 7px rgba(163,177,198,.5),inset -3px -3px 7px rgba(255,255,255,.9)">● Sistemas que trabajan solos</div>
+      <h1 class="fade d2" style="margin-top:26px">La empresa que<br>funciona <span class="chip">sin que<br>estés encima</span></h1>
+      <p class="fade d3">Automatizamos los procesos que hoy dependen de alguien copiando datos a mano. Tú decides. El sistema ejecuta.</p>
+      <div class="fade d4"><a class="cta" href="#d">Agendar llamada gratuita →</a></div>
+    </div>
+    <div class="side fade d5" style="position:relative;height:400px">
+      <div class="soft" style="position:absolute;top:10px;right:0;width:310px;padding:26px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:20px">
+          <span style="font-size:12px;color:#7A8A9D">Procesos activos</span>
+          <span style="font-size:11px;font-weight:600;color:#5D7CFF">3 / 3</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="inset" style="padding:13px 16px;display:flex;justify-content:space-between;font-size:13px"><span>Facturación</span><span style="color:#22D3EE">✓</span></div>
+          <div class="inset" style="padding:13px 16px;display:flex;justify-content:space-between;font-size:13px"><span>Altas de cliente</span><span style="color:#22D3EE">✓</span></div>
+          <div class="inset" style="padding:13px 16px;display:flex;justify-content:space-between;font-size:13px"><span>Informes semanales</span><span style="color:#5D7CFF">↻</span></div>
+        </div>
+      </div>
+      <div class="soft pulse" style="position:absolute;bottom:20px;left:0;padding:22px 26px">
+        <div style="font-size:11px;color:#7A8A9D;margin-bottom:6px">ROI estimado</div>
+        <div style="font-size:2rem;font-weight:700;letter-spacing:-.03em" class="chip">3.2×</div>
+      </div>
+    </div>
+  </div>
+  <button class="pick" data-code="D" style="background:linear-gradient(120deg,#5D7CFF,#22D3EE);color:#fff;box-shadow:0 10px 26px rgba(93,124,255,.4)">Elegir D · Soft Machine</button>
+</section>
+
+<script>
+document.querySelectorAll('.pick').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const code='ESTILO:'+b.dataset.code;
+    navigator.clipboard?.writeText(code);
+    const t=b.textContent;b.textContent='✓ Copiado: '+code;
+    setTimeout(()=>b.textContent=t,2200);
+  });
+});
+</script>
+</body>
+</html>
