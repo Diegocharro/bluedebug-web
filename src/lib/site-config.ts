@@ -2,7 +2,7 @@ export const site = {
   name: "Bluedebug",
   domain: "https://bluedebug.com",
   tagline: "Ingeniería de procesos y automatización",
-  email: "hola@bluedebug.com",
+  email: "bluedebug.contact@gmail.com",
   founded: "2025",
   claim:
     "Auditamos el trabajo manual que hace tu equipo, lo medimos en horas y construimos el sistema que lo sustituye.",
