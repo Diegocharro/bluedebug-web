@@ -82,7 +82,7 @@ export default function Footer() {
           <span>
             © {new Date().getFullYear()} BlueDebug — Automatización de procesos
           </span>
-          <span>Hecho en España</span>
+          <span>Hecho en Gijón, Asturias</span>
         </div>
       </div>
     </footer>

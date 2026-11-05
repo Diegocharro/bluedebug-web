@@ -69,7 +69,8 @@ export default function Contact() {
             <p className="mt-6 max-w-[42ch] text-[1rem] leading-[1.7]" style={{ color: "var(--ink-soft)" }}>
               Una llamada, sin compromiso. Salimos de ahí sabiendo los dos si
               esto tiene sentido o no. Si no lo tiene, te lo decimos en esa
-              misma llamada.
+              misma llamada. Estamos en Gijón y trabajamos con empresas de toda
+              España.
             </p>
           </Reveal>
           <Reveal delay={0.15}>
