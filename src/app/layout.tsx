@@ -26,11 +26,11 @@ const mono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(site.domain),
   title: {
-    default: "Bluedebug — Automatización de procesos para empresas",
+    default: "BlueDebug · Automatización de procesos y software a medida en Gijón",
     template: "%s · BlueDebug",
   },
   description:
-    "Auditamos el trabajo manual que hace tu equipo, lo medimos en horas y construimos el sistema que lo sustituye. Primera llamada gratuita.",
+    "Estudio de Gijón (Asturias). Auditamos el trabajo manual de tu equipo, lo medimos en horas y construimos el sistema que lo sustituye. Presupuesto cerrado.",
   keywords: [
     "automatización de procesos",
     "integración de sistemas",
@@ -40,9 +40,9 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Bluedebug — Automatización de procesos para empresas",
+    title: "BlueDebug · Automatización de procesos y software a medida en Gijón",
     description:
-      "El trabajo manual que sobra, fuera. Auditamos, medimos en horas y construimos el sistema que lo sustituye.",
+      "Estudio de Gijón (Asturias). Auditamos el trabajo manual de tu equipo, lo medimos en horas y construimos el sistema que lo sustituye.",
     url: site.domain,
     siteName: site.name,
     locale: "es_ES",
@@ -50,8 +50,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Bluedebug — Automatización de procesos para empresas",
-    description: "El trabajo manual que sobra, fuera.",
+    title: "BlueDebug · Automatización de procesos y software a medida en Gijón",
+    description:
+      "Estudio de Gijón (Asturias). Auditamos el trabajo manual de tu equipo, lo medimos en horas y construimos el sistema que lo sustituye.",
   },
   robots: { index: true, follow: true },
 };
