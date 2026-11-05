@@ -2,19 +2,19 @@ import Reveal from "@/components/Reveal";
 
 const COSTS = [
   {
-    figure: "1 de cada 5",
-    label: "horas de oficina",
-    text: "se van en copiar datos de un sitio a otro. No es una estimación de folleto: sale de cronometrar el proceso con el equipo delante.",
+    figure: "Horas",
+    label: "copiando datos",
+    text: "Las que se van en pasar datos de un sitio a otro. Nadie las apunta; en el diagnóstico las cronometramos con el equipo delante.",
   },
   {
-    figure: "3 semanas",
-    label: "de retraso medio",
-    text: "entre que un dato entra y alguien lo ve en un informe. Para entonces la decisión ya se tomó a ciegas.",
+    figure: "Días",
+    label: "de retraso",
+    text: "Los que pasan entre que un dato entra y alguien lo ve en un informe. Para entonces la decisión ya se tomó a ciegas.",
   },
   {
-    figure: "El 90%",
-    label: "de los errores",
-    text: "no son de criterio: son de transcripción. Un IVA mal copiado, una fila pegada donde no iba, un email que nadie reenvió.",
+    figure: "Errores",
+    label: "de transcripción",
+    text: "No son de criterio: son de copiar a mano. Un IVA mal copiado, una fila pegada donde no iba, un email que nadie reenvió.",
   },
   {
     figure: "1 persona",

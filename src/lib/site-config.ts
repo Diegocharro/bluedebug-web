@@ -7,8 +7,6 @@ export const site = {
   claim:
     "Auditamos el trabajo manual que hace tu equipo, lo medimos en horas y construimos el sistema que lo sustituye.",
   stats: {
-    hoursSaved: 40,
-    roi: 3.2,
     appsLive: 4,
     federations: 2,
   },

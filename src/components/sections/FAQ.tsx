@@ -27,7 +27,7 @@ const QUESTIONS = [
   },
   {
     q: "¿Trabajáis con empresas pequeñas?",
-    a: "Sí. De hecho es donde más se nota: en una empresa de diez personas, recuperar 40 horas al mes es como contratar a alguien más sin pagar una nómina.",
+    a: "Sí. De hecho es donde más se nota: en una empresa pequeña, unas pocas horas a la semana de trabajo manual son una parte grande del tiempo de alguien.",
   },
 ];
 
