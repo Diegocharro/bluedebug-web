@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(site.domain),
   title: {
     default: "Bluedebug — Automatización de procesos para empresas",
-    template: "%s · Bluedebug",
+    template: "%s · BlueDebug",
   },
   description:
     "Auditamos el trabajo manual que hace tu equipo, lo medimos en horas y construimos el sistema que lo sustituye. Primera llamada gratuita.",

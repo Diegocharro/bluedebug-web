@@ -1,5 +1,5 @@
 export const site = {
-  name: "Bluedebug",
+  name: "BlueDebug",
   domain: "https://bluedebug.com",
   tagline: "Ingeniería de procesos y automatización",
   email: "bluedebug.contact@gmail.com",

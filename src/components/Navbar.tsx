@@ -25,7 +25,7 @@ export default function Navbar() {
       }}
     >
       <div className="mx-auto flex h-[68px] w-[min(1180px,92vw)] items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5" aria-label="Bluedebug — inicio">
+        <Link href="/" className="flex items-center gap-2.5" aria-label="BlueDebug — inicio">
           <Image
             src="/logo-bd/logo-bd-256.png"
             alt=""

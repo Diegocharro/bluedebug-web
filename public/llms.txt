@@ -1,4 +1,4 @@
-# Bluedebug
+# BlueDebug
 
 > Ingeniería de procesos y automatización para empresas. Auditamos el trabajo
 > manual que hace un equipo, lo medimos en horas y construimos el sistema que

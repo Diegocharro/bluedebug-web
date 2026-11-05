@@ -18,7 +18,7 @@ export default function Footer() {
                 className="h-8 w-8 object-contain"
               />
               <span className="font-display text-[20px] font-extrabold tracking-[-0.04em]">
-                Bluedebug
+                BlueDebug
               </span>
             </div>
             <p
@@ -80,7 +80,7 @@ export default function Footer() {
           style={{ borderTop: "1px solid var(--line)", color: "var(--ink-faint)" }}
         >
           <span>
-            © {new Date().getFullYear()} Bluedebug — Automatización de procesos
+            © {new Date().getFullYear()} BlueDebug — Automatización de procesos
           </span>
           <span>Hecho en España</span>
         </div>

@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: process.env.CONTACT_FROM ?? "Bluedebug <web@bluedebug.com>",
+      from: process.env.CONTACT_FROM ?? "BlueDebug <web@bluedebug.com>",
       to: [to],
       reply_to: body.email,
       subject: `Nueva consulta de ${body.name}`,
